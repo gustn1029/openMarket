@@ -1,8 +1,7 @@
 import "../css/style.css";
-import { setupCounter } from "./counter.js";
+import { header } from "./header.js";
+
 
 document.querySelector("#app").innerHTML = `
-  
+  ${header()}
 `;
-
-setupCounter(document.querySelector("#counter"));
