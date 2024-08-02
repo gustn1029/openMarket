@@ -1,0 +1,96 @@
+.user__btn__list {
+  display: flex;
+
+  li {
+    width: 50%;
+    position: relative;
+
+    button {
+      width: 100%;
+      padding: 20px 0 38px;
+      line-height: 1.375rem;
+      font-size: 1.125rem;
+      text-align: center;
+      background-color: #f2f2f2;
+      border-radius: 10px 10px 10px 10px;
+      border: 1px solid #c4c4c4;
+    }
+    button.active {
+      background-color: white;
+    }
+  }
+  li:has(.active)::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: calc(100% - 2px);
+    height: 10px;
+    background-color: white;
+    z-index: 1;
+    left: 1px;
+    bottom: 15px;
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+  padding: 34px 35px 36px;
+  border: 1px solid #c4c4c4;
+  transform: translateY(-20px);
+  width: 100%;
+  background-color: white;
+}
+
+form.customer {
+  border-radius: 0 10px 10px 10px;
+}
+form.seller {
+  border-radius: 10px 0 10px 10px;
+}
+
+form input {
+  width: 100%;
+  line-height: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid #c4c4c4;
+  color: #767676;
+  outline: none;
+}
+
+form input:nth-of-type(1) {
+  margin-bottom: 6px;
+}
+
+form input:nth-of-type(2) {
+  margin-bottom: 36px;
+}
+
+form button {
+  background-color: #21bf48;
+  line-height: 22px;
+  padding: 19px 0;
+  color: white;
+  font-size: 1.125rem;
+  border-radius: 5px;
+}
+
+.sign__up {
+  text-align: center;
+}
+.sign__up a:last-child {
+  margin-left: 33px;
+  position: relative;
+}
+
+.sign__up a:last-child::before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  left: -17px;
+  top: 0;
+  background-color: #333;
+}
