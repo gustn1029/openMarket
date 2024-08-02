@@ -1,4 +1,4 @@
-export const header = () => {
+export const Header = () => {
   const user = localStorage.getItem("user");
   const listItem = [
     {
@@ -31,7 +31,7 @@ export const header = () => {
                   .map(
                     (el) =>
                       `<li class="w-1/2 text-center">
-                        <a href="${el.href}" class="block leading-[14px] text-[12px] text-[#767676] pt-[36px]" style="background: url('/openMarket${el.imageUrl}') no-repeat center top">${el.text}</a>
+                        <a href="${el.href}" class="block leading-[0.875rem] text-[0.75rem] text-[#767676] pt-[36px]" style="background: url('/openMarket${el.imageUrl}') no-repeat center top">${el.text}</a>
                     </li>`
                   )
                   .join("")}
