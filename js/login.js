@@ -4,7 +4,7 @@ const template = () => {
 
   const login = `
           <header class="pt-[100px] text-center mb-[70px]">
-              <a href="/" class="inline-block">
+              <a href="/openMarket" class="inline-block">
                   <h1 class="w-[238px] h-[74px] indent-[-9999px] bg-[url('/images/Logo-hodu.png')] bg-no-repeat bg-contain">호두 오픈마켓</h1>
               </a>
           </header>

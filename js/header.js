@@ -16,7 +16,7 @@ export const Header = () => {
     <header class="">
         <section class="inner flex w-full bg-white py-[20px]">
             <div class="flex items-center grow gap-[30px]">
-                <a href="/">
+                <a href="/openMarket">
                     <h1 class="w-[124px] h-[38px] indent-[-9999px] bg-[url('/images/Logo-hodu.png')] bg-no-repeat bg-cover">호두 오픈마켓</h1>
                 </a>
                 <label for="search-input" class="max-w-[400px] w-full flex items-center px-[22px] py-[9px] rounded-[50px] border-[2px] border-[#21BF48]">
