@@ -32,10 +32,9 @@
   }
 }
 
-form {
+.user__section {
   display: flex;
   flex-direction: column;
-  margin-bottom: 30px;
   padding: 34px 35px 36px;
   border: 1px solid #c4c4c4;
   transform: translateY(-20px);
@@ -43,14 +42,14 @@ form {
   background-color: white;
 }
 
-form.customer {
+.user__section.customer {
   border-radius: 0 10px 10px 10px;
 }
-form.seller {
+.user__section.seller {
   border-radius: 10px 0 10px 10px;
 }
 
-form input {
+.user__section .login__input {
   width: 100%;
   line-height: 20px;
   padding: 20px 0;
@@ -59,11 +58,11 @@ form input {
   outline: none;
 }
 
-form input:nth-of-type(1) {
+.user__section .login__input:nth-of-type(1) {
   margin-bottom: 6px;
 }
 
-form input:nth-of-type(2) {
+.user__section .login__input:nth-of-type(2) {
   margin-bottom: 18px;
 }
 
@@ -71,14 +70,16 @@ form input:nth-of-type(2) {
   color: #EB5757;
 }
 
-form button {
-  margin-top: 18px;
-  background-color: #21bf48;
+.user__form .btn {
   line-height: 22px;
   padding: 19px 0;
   color: white;
   font-size: 1.125rem;
   border-radius: 5px;
+}
+
+.user__form .btn__green {
+  background-color: #21bf48;
 }
 
 .sign__up {
@@ -98,4 +99,37 @@ form button {
   left: -17px;
   top: 0;
   background-color: #333;
+}
+
+.user__form label span {
+  display: block;
+  margin-bottom: 10px;
+  color: #767676;
+}
+
+.join__input, .id__check__btn {
+  border-radius: 5px;
+  line-height: 20px;
+  
+}
+
+.join__input {
+  width: 100%;
+  padding: 16px 15px;
+  border: 1px solid #C4C4C4;
+  outline: none;
+}
+
+.join__input:active,
+.join__input:focus {
+  border: 1px solid #21BF48;
+}
+
+.id__check__btn {
+  padding: 17px 31px;
+  color: white;
+}
+
+.select__wrap {
+
 }
