@@ -63,8 +63,8 @@ gantt
     title tutorial django
     dateFormat YY-MM-DD
     section FE
-        header    :2024-08-03, 2d
-        login    :2024-08-03, 2d
+        header    :2024-08-02, 2d
+        login    :2024-08-02, 2d
 ```
 
 ## 5. 역할 분담
