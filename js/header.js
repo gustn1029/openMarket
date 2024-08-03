@@ -1,17 +1,37 @@
 export const Header = () => {
-  const user = localStorage.getItem("user");
-  const listItem = [
+  const user = JSON.parse(localStorage.getItem("user"));
+  let listArr = [];
+
+  const dependentItem = {
+    href: user ? "#my-page" : "#login",
+    text: user ? "마이페이지" : "로그인",
+    imageUrl: "/images/icon-user.svg",
+  };
+
+  const buyerListItem = [
     {
       href: "#cart",
       text: "장바구니",
       imageUrl: "/images/icon-shopping-cart.svg",
     },
+  ];
+
+  const sellerListItem = [
     {
-      href: user ? "#my-page" : "#login",
-      text: user ? "마이페이지" : "로그인",
-      imageUrl: "/images/icon-user.svg",
+      href: "#seller-center",
+      text: "판매자 센터",
+      imageUrl: "/images/icon-shopping-bag.svg",
     },
   ];
+
+  buyerListItem.push(dependentItem);
+  sellerListItem.unshift(dependentItem);
+
+  if(user && user.user_type === "SELLER") {
+    listArr = sellerListItem;
+  } else {
+    listArr = buyerListItem;
+  }
   const $header = `
     <header class="">
         <section class="inner flex w-full bg-white py-[20px]">
@@ -26,15 +46,22 @@ export const Header = () => {
                 </label>
             </div>
             <nav>
-            <ul class="w-[128px] flex">
-                ${listItem
-                  .map(
-                    (el) =>
-                      `<li class="w-1/2 text-center">
-                        <a href="${el.href}" class="block leading-[0.875rem] text-[0.75rem] text-[#767676] pt-[36px]" style="background: url('/openMarket${el.imageUrl}') no-repeat center top">${el.text}</a>
-                    </li>`
-                  )
-                  .join("")}
+            <ul class="flex items-center">
+                ${
+                  listArr.map((el) => {
+                          let itemPublish = "";
+                          if (el.text === "판매자 센터") {
+                            itemPublish = `<a href="${el.href}" class="block text-left py-[18px] pl-[60px] ml-[30px] w-[168px] leading-[1.125rem] text-[1.125rem] text-white rounded-[5px]" style="background: url('/openMarket${el.imageUrl}') no-repeat 20px center; background-color: #21BF48;">${el.text}</a>`
+                          } else {
+                            itemPublish = `<a href="${el.href}" class="block w-[64px] text-center leading-[0.875rem] text-[0.75rem] text-[#767676] pt-[36px]" style="background: url('/openMarket${el.imageUrl}') no-repeat center top">${el.text}</a>`;
+                          }
+                          return `
+                              <li class="">
+                                ${itemPublish}
+                              </li>`;
+                        })
+                        .join("")
+                }
                 </ul>
             </nav>
         </section>
