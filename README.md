@@ -3,8 +3,14 @@
 ## 1. 목표와 기능
 
 ### 1.1 목표
+- 판매자와 구매자를 구별하여 판매자가 상품을 등록, 판매하며 구매자는 해당 상품을 구매하는 서비스를 구현 합니다.
 
 ### 1.2 기능
+- 판매자로 로그인 하여 상품을 등록, 수정 및 판매할 수 있습니다.
+- 판매자는 상품 구매가 불가능합니다.
+- 구매자가 오픈마켓에 등록되어 있는 상품의 세부사항을 확인할 수 있습니다.
+- 구매자는 구매하고자 하는 상품을 장바구니에 담을 수 있습니다.
+- 구매자는 장바구니에 담은 상품을 구매할 수 있습니다.
 
 ### 1.3 팀 구성
 <table>
@@ -17,8 +23,15 @@
 </table>
 
 ## 2. 개발 환경 및 배포 URL
+
 ### 2.1 개발 환경
+- 개발 환경
+    - vite
+- 배포 환경
+    - GitHub pages
+
 ### 2.2 배포 URL
+- https://gustn1029.github.io/openMarket/
 
 ### 2.3 URL 구조(모놀리식)
 
@@ -35,8 +48,11 @@
 📦tutorial  
  ┣ 📂css
  ┃  ┣ style.css
+ ┃  ┣ login.css
  ┣ 📂js
  ┃  ┣ main.js
+ ┃  ┣ header.js
+ ┃  ┣ login.js
  ┣ 📜index.html
  ┣ 📜README.md  
 
@@ -47,7 +63,8 @@ gantt
     title tutorial django
     dateFormat YY-MM-DD
     section FE
-        메인    :2024-08-02, 1d
+        header    :2024-08-02, 1d
+        login    :2024-08-03, 2d
 ```
 
 ## 5. 역할 분담
