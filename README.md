@@ -48,11 +48,13 @@
 📦openMarket  <br>
  ┣ 📂css<br>
  ┃  ┣ style.css<br>
- ┃  ┣ login.css<br>
+ ┃  ┣ sign.css<br>
+ ┃  ┣ join.css<br>
  ┣ 📂js<br>
  ┃  ┣ main.js<br>
  ┃  ┣ header.js<br>
  ┃  ┣ login.js<br>
+ ┃  ┣ join.js<br>
  ┣ 📜index.html<br>
  ┣ 📜README.md  <br>
 
