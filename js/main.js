@@ -1,5 +1,6 @@
 import "../css/style.css";
 import { Header } from "./header.js";
+import { Join } from "./join.js";
 import { Login } from "./login.js";
 
 
@@ -13,6 +14,8 @@ const router = () => {
   `;
   } else if(url === "login") {
     Login();
+  } else if(url === "sign-up") {
+    Join();
   }
 }
 
