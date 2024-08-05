@@ -15,7 +15,10 @@
 .join__input,
 .selected__code {
   width: 100%;
-  padding: 16px 15px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 15px;
+  padding-right: 15px;
   border: 1px solid #c4c4c4;
   outline: none;
 }
@@ -25,18 +28,62 @@
   border: 1px solid #21bf48;
 }
 
+.join__input.error {
+  border: 1px solid #EB5757;
+}
+
 .id__check__btn {
   padding: 17px 31px;
   color: white;
 }
-.selected__code {
-  min-height: 54px;
-  border-radius: 5px;
+
+#userPassword, #userPassword-check {
+  padding-right: 44px;
+}
+label:has(#userPassword)::after,
+label:has(#userPassword-check)::after {
+  content: "";
+  width: 28px; height: 28px;
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  background: url('/openMarket/images/icon-check-off.svg');
+}
+label:has(#userPassword.check)::after,
+label:has(#userPassword-check.check)::after {
+  background: url('/openMarket/images/icon-check-on.svg');
+}
+label:has(#userPassword.error)::after,
+label:has(#userPassword-check.error)::after {
+  bottom: 38px;
 }
 
 .select__wrap {
   position: relative;
+  z-index: 10;
 }
+
+.selected__code {
+  position: relative;
+  min-height: 54px;
+  border-radius: 5px;
+  padding-right: 36px;
+}
+
+.selected__code::after{
+  content: "";
+  width: 24px; height: 14px;
+  position: absolute;
+  right: 12px; top: 50%;
+  background: url("/openMarket/images/icon-down-arrow.svg");
+  transform: translateY(-50%);
+  transition: all 0.3s;
+}
+
+.select__wrap.view .selected__code::after {
+  transform: translateY(0) rotate(180deg);
+}
+
 .select__list {
   display: none;
   position: absolute;
@@ -49,9 +96,10 @@
   background-color: white;
   border: 1px solid #c4c4c4;
   border-radius: 5px;
+  z-index: 10;
 }
 
-.select__list.view {
+.select__wrap.view .select__list {
   display: block;
 }
 
@@ -78,6 +126,10 @@
   line-height: 20px;
   padding: 10px 0;
   cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .select__option:hover {
