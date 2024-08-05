@@ -26,8 +26,8 @@ window.addEventListener("DOMContentLoaded", () => {
   router();
 });
 
-window.addEventListener("unload",() => {
-  localStorage.removeItem("user");
-})
+// window.addEventListener("unload",() => {
+//   localStorage.removeItem("user");
+// })
 
 
