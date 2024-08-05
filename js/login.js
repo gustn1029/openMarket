@@ -1,4 +1,5 @@
 import "../css/sign.css";
+import ErrorMessage from "./components/ErrorMessage";
 
 const template = () => {
   const login = `
@@ -8,19 +9,19 @@ const template = () => {
               </a>
           </header>
           <form class="user__form max-w-[550px] w-full m-auto ">
-              <h2 class="hidden">로그인 폼</h2>
+              <h2 class="tag__hidden">로그인 폼</h2>
               <ul class="user__btn__list">
                 <li>
-                    <button type="button" class="customer active">구매회원 로그인</button>
+                    <button type="button" class="customer active" data-type="BUYER">구매회원 로그인</button>
                 </li>
                 <li>
-                    <button type="button" class="seller">판매회원 로그인</button>
+                    <button type="button" class="seller" data-type="SELLER">판매회원 로그인</button>
                 </li>
               </ul>
               <section class="user__section customer mb-[30px]">
-                  <label for="userId" class="hidden">아이디 입력</label>
+                  <label for="userId" class="tag__hidden">아이디 입력</label>
                   <input type="text" class="login__input" placeholder="아이디" id="userId" required />
-                  <label for="userPassword" class="hidden">비밀번호 입력</label>
+                  <label for="userPassword" class="tag__hidden">비밀번호 입력</label>
                   <input type="password" class="login__input"  placeholder="비밀번호" id="userPassword" required />
                   <button class="btn btn__green mt-[18px]" type="submit">로그인</button>
               </section>
@@ -39,7 +40,8 @@ const template = () => {
  * class에 보여지는 tailwind 외에는 모두 css 파일로 관리됨
  */
 export const Login = () => {
-  document.body.innerHTML = template();
+  const root = document.getElementById("app");
+  root.innerHTML = template();
 
   const url = "https://openmarket.weniv.co.kr";
   let loginUser = "BUYER";
@@ -51,20 +53,22 @@ export const Login = () => {
   const userPassword = document.getElementById("userPassword");
   let errorMessage = null;
 
-  const userBtnClickHandler = (clickUserInfo, unclickUserInfo, infoText) => {
+  const userBtnClickHandler = (clickUserInfo, unclickUserInfo) => {
+    const unclickUserInfoType = unclickUserInfo.getAttribute("data-type").toLowerCase();
+    const clickUserInfoType = clickUserInfo.getAttribute("data-type");
     unclickUserInfo.classList.remove("active");
     !clickUserInfo.classList.contains("active") &&
       clickUserInfo.classList.add("active");
-      section.classList.remove(unclickUserInfo.classList);
-      section.classList.add(clickUserInfo.classList);
-    loginUser = infoText;
+      section.classList.remove(unclickUserInfoType);
+      section.classList.add(clickUserInfoType.toLowerCase());
+    loginUser = clickUserInfoType;
     userId.value = "";
-    userPassword = "";
+    userPassword.value = "";
     errorMessage !== null && errorMessage.remove();
     errorMessage = null;
   };
 
-  const submitHandler = async () => {
+  const submitHandler = () => {
     errorMessage !== null && errorMessage.remove();
 
     const idVal = userId.value;
@@ -76,38 +80,43 @@ export const Login = () => {
       login_type: loginUser
     };
 
-    const res = await fetch(`${url}/accounts/login/`, {
+    const res = fetch(`${url}/accounts/login/`, {
       method:"POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(loginData)
     });
-    const json = await res.json();
-
-    if(res.ok) {
+    
+    res.then((res) => {
+      if(res.ok) {
+        const json = res.json();
+        return json;
+      } else {
+        userPassword.insertAdjacentHTML("afterend",ErrorMessage("아이디 또는 비밀번호가 일치하지 않습니다."));
+  
+        errorMessage = document.querySelector(".error__message");
+      };
+    }).then((json) => {
       const user = {
         user_type: json.user_type,
         token: json.token
       }
-
+      
       localStorage.setItem("user", JSON.stringify(user));
-      window.location.href = "/openMarket";
-    } else {
-      userPassword.insertAdjacentHTML("afterend",`<p class="error__message">아이디 또는 비밀번호가 일치하지 않습니다.</p>`);
-
-      errorMessage = document.querySelector(".error__message");
-    };
+    }).then(()=> {
+      window.location.href = "/openMarket/"
+    })
   }
 
   customerBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    userBtnClickHandler(customerBtn, sellerBtn, "BUYER");
+    userBtnClickHandler(customerBtn, sellerBtn);
   });
 
   sellerBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    userBtnClickHandler(sellerBtn, customerBtn, "SELLER");
+    userBtnClickHandler(sellerBtn, customerBtn);
   });
 
   form.addEventListener("submit", (e) => {
