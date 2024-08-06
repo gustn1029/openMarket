@@ -1,5 +1,6 @@
 import "../css/sign.css";
 import ErrorMessage from "./components/ErrorMessage";
+import { url } from "./main";
 
 const template = () => {
   const login = `
@@ -43,7 +44,6 @@ export const Login = () => {
   const root = document.getElementById("app");
   root.innerHTML = template();
 
-  const url = "https://openmarket.weniv.co.kr";
   let loginUser = "BUYER";
   const customerBtn = document.querySelector("button.customer");
   const sellerBtn = document.querySelector("button.seller");
@@ -100,7 +100,8 @@ export const Login = () => {
     }).then((json) => {
       const user = {
         user_type: json.user_type,
-        token: json.token
+        token: json.token,
+        cart:[]
       }
       
       localStorage.setItem("user", JSON.stringify(user));

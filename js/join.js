@@ -2,6 +2,7 @@ import "../css/sign.css";
 import "../css/join.css";
 import LabelInput from "./components/LabelInput";
 import ErrorMessage from "./components/ErrorMessage";
+import { url } from "./main";
 
 /**
  *
@@ -82,7 +83,6 @@ export const Join = () => {
   root.innerHTML = template();
 
   const user = JSON.parse(localStorage.getItem("user"));
-  const url = "https://openmarket.weniv.co.kr";
   let joinUser = "BUYER";
   const customerBtn = document.querySelector("button.customer");
   const sellerBtn = document.querySelector("button.seller");
@@ -219,31 +219,37 @@ export const Join = () => {
 
   const passwordChangeHandler = () => {
     const password = userPassword.value;
-    const regex = /^(?=.*[a-z])(?=.*\d).{8,}$/;
+    const regex = /^(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
     errorMessage !== null && errorMessage.remove();
 
     if (!regex.test(password)) {
-      if (password.length < 8) {
-        userPassword.parentNode.insertAdjacentHTML(
-          "afterend",
-          ErrorMessage("비밀번호는 8자 이상이어야 합니다.")
-        );
-      } else if (!/[a-z]/.test(password)) {
-        userPassword.parentNode.insertAdjacentHTML(
-          "afterend",
-          ErrorMessage(
-            "비밀번호는 한 개 이상의 영소문자가 필수적으로 들어가야 합니다."
-          )
-        );
-      } else if (!/\d/.test(password)) {
-        userPassword.parentNode.insertAdjacentHTML(
-          "afterend",
-          ErrorMessage(
-            "비밀번호는 한 개 이상의 숫자가 필수적으로 들어가야 합니다."
-          )
-        );
-      }
+      // if (password.length < 8) {
+      //   userPassword.parentNode.insertAdjacentHTML(
+      //     "afterend",
+      //     ErrorMessage("비밀번호는 8자 이상이어야 합니다.")
+      //   );
+      // } else if (!/[a-z]/.test(password)) {
+      //   userPassword.parentNode.insertAdjacentHTML(
+      //     "afterend",
+      //     ErrorMessage(
+      //       "비밀번호는 한 개 이상의 영소문자가 필수적으로 들어가야 합니다."
+      //     )
+      //   );
+      // } else if (!/\d/.test(password)) {
+      //   userPassword.parentNode.insertAdjacentHTML(
+      //     "afterend",
+      //     ErrorMessage(
+      //       "비밀번호는 한 개 이상의 숫자가 필수적으로 들어가야 합니다."
+      //     )
+      //   );
+      // }
+      userPassword.parentNode.insertAdjacentHTML(
+            "afterend",
+            ErrorMessage(
+              "8자 이상, 영문 대 소문자, 숫자, 특수문자를 사용하세요."
+            )
+          );
       !userPassword.classList.contains("error") &&
         userPassword.classList.add("error");
       userPassword.classList.contains("check") &&
