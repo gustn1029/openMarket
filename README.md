@@ -47,14 +47,25 @@
 
 📦openMarket  <br>
  ┣ 📂css<br>
- ┃  ┣ style.css<br>
- ┃  ┣ sign.css<br>
- ┃  ┣ join.css<br>
+ ┃  ┣📜style.css<br>
+ ┃  ┣📜sign.css<br>
+ ┃  ┣📜join.css<br>
+ ┃  ┣📜details.css<br>
  ┣ 📂js<br>
- ┃  ┣ main.js<br>
- ┃  ┣ header.js<br>
- ┃  ┣ login.js<br>
- ┃  ┣ join.js<br>
+ ┃  ┃ ┣📂components <br>
+ ┃  ┃ ┃ ┣📂modal <br>
+ ┃  ┃ ┃ ┃ ┣📜modal.js <br>
+ ┃  ┃ ┃ ┃ ┣📜modal.css <br>
+ ┃  ┃ ┃ ErrorMessage.js <br>
+ ┃  ┃ ┃ Home.js <br>
+ ┃  ┃ ┃ LabelInput.js <br>
+ ┃  ┣📜cartList.js<br>
+ ┃  ┣📜details.js<br>
+ ┃  ┣📜main.js<br>
+ ┃  ┣📜header.js<br>
+ ┃  ┣📜login.js<br>
+ ┃  ┣📜logout.js<br>
+ ┃  ┣📜join.js<br>
  ┣ 📜index.html<br>
  ┣ 📜README.md  <br>
 
@@ -66,7 +77,10 @@ gantt
     dateFormat YY-MM-DD
     section FE
         header    :2024-08-02, 2d
-        login    :2024-08-02, 2d
+        login    :2024-08-02, 3d
+        join     :2024-08-04, 2d
+        cartList     :2024-08-06, 1d
+        details     :2024-08-06, 2d
 ```
 
 ## 5. 역할 분담
