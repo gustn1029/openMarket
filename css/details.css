@@ -1,0 +1,38 @@
+
+
+.total__quantity::after {
+    content: "";
+    width: 1px;
+    height: 80%;
+    position: absolute;
+    right: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #c4c4c4;
+}
+
+
+.detail__tab__btn::before,
+.detail__tab__btn::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    background-color: #E0E0E0;
+    left: 0;
+    bottom: 0;
+}
+
+.detail__tab__btn::before {
+    height: 0;
+    background-color: #21BF48;
+    z-index: 1;
+    transition: all 0.3s;
+}
+
+.detail__tab__btn::after {
+    height: 6px;
+}
+
+.detail__tab__btn.active::before {
+    height: 6px;
+}
