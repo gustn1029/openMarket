@@ -1,13 +1,13 @@
 import { Header } from "../header";
 import { root } from "../main";
-import CartList from "../cartList.js";
+import ProductList from "../productList.js";
 import Details from "../details.js";
 
 const Home = async (content="",id="") => {
     const $main = document.createElement("main");
     $main.classList.add("m-[80px_0_180px]")
     if(content ==="") {
-        $main.appendChild(await CartList());
+        $main.appendChild(await ProductList());
     } else if (content ==="details") {
         $main.appendChild(await Details(id));
     }
