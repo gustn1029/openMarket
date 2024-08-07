@@ -79,7 +79,7 @@ gantt
         header    :2024-08-02, 2d
         login    :2024-08-02, 3d
         join     :2024-08-04, 2d
-        cartList     :2024-08-06, 1d
+        productList     :2024-08-06, 2d
         details     :2024-08-06, 2d
 ```
 
