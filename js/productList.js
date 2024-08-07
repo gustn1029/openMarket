@@ -5,7 +5,6 @@ const fetchData = async (page = "") => {
     const res = await fetch(`${url}/products/${page && `?page=${page}`}`);
     if (res.ok) {
       const json = await res.json();
-      console.log(json);
       return json;
     }
   } catch (error) {
@@ -24,8 +23,8 @@ const template = async (page = "") => {
                             <li class="">
                               <a href="#details/${
                                         el.product_id
-                                      }" class="grid gap-[10px]">
-                                  <div class="relative mb-[6px] items-center justify-center h-[0] pb-[100%] overflow-hidden border border-[#c4c4c4] rounded-[10px]">
+                                      }" class="grid gap-[10px] product__anchor">
+                                  <div class="product__img relative mb-[6px] items-center justify-center h-[0] pb-[100%] overflow-hidden border border-[#c4c4c4] rounded-[10px]">
                                       <img src="${el.image}" alt="${
                                       el.product_name
                                       }" class="absolute w-full h-full left-[0] top-[0]" />
@@ -60,15 +59,21 @@ const template = async (page = "") => {
 
   const prev = data.previous ? data.previous.split("page=")[1] : "";
   const next = data.next ? data.next.split("page=")[1] : "";
-  console.log(prev, "prev");
-  console.log(next, "next");
 
   return { template: cartListWrap, prev: prev, next: next };
 };
 
-const CartList = async () => {
-  const temp = await template();
+const ProductList = async () => {
+  const localPageData = sessionStorage.getItem("page");
+  let temp;
+
+  if(localPageData === "") {
+    temp = await template();
+  } else {
+    temp = await template(localPageData);
+  }
   const inner = document.createElement("div");
+  let currentPage = 0;
   inner.classList.add("inner");
   inner.insertAdjacentHTML("beforeend", temp.template);
 
@@ -78,8 +83,8 @@ const CartList = async () => {
   };
 
   const paginationHandler = async (page) => {
+    currentPage = page;
     const newData = await template(page);
-    console.log(newData);
 
     inner.innerHTML = "";
     inner.insertAdjacentHTML("beforeend", newData.template);
@@ -99,8 +104,13 @@ const CartList = async () => {
       e.preventDefault();
       paginationHandler(pagination.next);
     }
+
+    if(e.target.parentNode.classList.contains("product__anchor") || e.target.parentNode.classList.contains("product__img")) {
+      sessionStorage.setItem("page", currentPage === 0 ? "" : currentPage);
+    }
   });
+
   return inner;
 };
 
-export default CartList;
+export default ProductList;
