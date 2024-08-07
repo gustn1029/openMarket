@@ -64,7 +64,7 @@ const template = () => {
                       itemPublish = `<a href="${el.href}" class="seller block text-left py-[18px] pl-[60px] ml-[30px] w-[168px] leading-[1.125rem] text-[1.125rem] text-white rounded-[5px] bg-[#21BF48] bg-no-repeat bg-top">${el.text}</a>`;
                     } else {
                       // bg 이미지는 hover 처리를 위해 style.css로 처리
-                      itemPublish = `<a href="${el.href}" class="nav__list__item ${el.class} block w-[64px] text-center leading-[0.875rem] text-[0.75rem] text-[#767676] pt-[36px]">${el.text}</a>`;
+                      itemPublish = `<a href="${el.href}" class="nav__list__item ${el.class} block w-[64px] text-center leading-[0.875rem] text-[0.75rem] text-[#767676] pt-[36px] hover:text-[#21BF48]">${el.text}</a>`;
                     }
 
                     if (el.children && el.children.length > 0) {
