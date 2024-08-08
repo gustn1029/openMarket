@@ -64,13 +64,13 @@ const template = async (page = "") => {
 };
 
 const ProductList = async () => {
-  const localPageData = sessionStorage.getItem("page");
+  const sessionPageData = sessionStorage.getItem("page");
   let temp;
 
-  if(localPageData === "") {
+  if(sessionPageData === "" || sessionPageData === null) {
     temp = await template();
   } else {
-    temp = await template(localPageData);
+    temp = await template(sessionPageData);
   }
   const inner = document.createElement("div");
   let currentPage = 0;
