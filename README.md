@@ -53,12 +53,16 @@
  ┃  ┣📜details.css<br>
  ┣ 📂js<br>
  ┃  ┃ ┣📂components <br>
+ ┃  ┃ ┃ ┣📂loading <br>
+ ┃  ┃ ┃ ┃ ┣📜Loading.js <br>
+ ┃  ┃ ┃ ┃ ┣📜loading.css <br>
  ┃  ┃ ┃ ┣📂modal <br>
  ┃  ┃ ┃ ┃ ┣📜modal.js <br>
  ┃  ┃ ┃ ┃ ┣📜modal.css <br>
  ┃  ┃ ┃ ErrorMessage.js <br>
  ┃  ┃ ┃ Home.js <br>
  ┃  ┃ ┃ LabelInput.js <br>
+ ┃  ┣📜cart.js<br>
  ┃  ┣📜cartList.js<br>
  ┃  ┣📜details.js<br>
  ┃  ┣📜main.js<br>
@@ -77,10 +81,11 @@ gantt
     dateFormat YY-MM-DD
     section FE
         header    :2024-08-02, 2d
-        login    :2024-08-02, 3d
+        login    :2024-08-02, 2d
         join     :2024-08-04, 2d
         productList     :2024-08-06, 2d
         details     :2024-08-06, 2d
+        cart     :2024-08-08, 1d
 ```
 
 ## 5. 역할 분담
