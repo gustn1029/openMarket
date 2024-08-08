@@ -5,7 +5,7 @@ import { url } from "./main";
 const template = () => {
   const login = `
           <header class="pt-[100px] text-center mb-[70px]">
-              <a href="/openMarket" class="inline-block">
+              <a href="/openMarket/" class="inline-block">
                   <h1 class="w-[238px] h-[74px] indent-[-9999px] bg-[url('/images/Logo-hodu.png')] bg-no-repeat bg-contain">호두 오픈마켓</h1>
               </a>
           </header>
@@ -106,7 +106,10 @@ export const Login = () => {
       
       localStorage.setItem("user", JSON.stringify(user));
     }).then(()=> {
-      window.location.href = "/openMarket/"
+      const beforeHash = localStorage.getItem("beforePage");
+      window.location.href = `/openMarket/${beforeHash ? beforeHash: ""}`;
+      window.location.reload();
+      localStorage.removeItem("beforePage");
     })
   }
 

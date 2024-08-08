@@ -18,7 +18,7 @@ const template = () => {
 
   const join = `
             <header class="pt-[100px] text-center mb-[70px]">
-                <a href="/openMarket" class="inline-block">
+                <a href="/openMarket/" class="inline-block">
                     <h1 class="w-[238px] h-[74px] indent-[-9999px] bg-[url('/images/Logo-hodu.png')] bg-no-repeat bg-contain">호두 오픈마켓</h1>
                 </a>
             </header>
@@ -219,7 +219,8 @@ export const Join = () => {
 
   const passwordChangeHandler = () => {
     const password = userPassword.value;
-    const regex = /^(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    const regex = /^(?=.*[a-z])(?=.*\d)(?=.*[\W_]?)[a-zA-Z\d\W_]{8,}$/;
+    console.log(!regex.test(password));
 
     errorMessage !== null && errorMessage.remove();
 
