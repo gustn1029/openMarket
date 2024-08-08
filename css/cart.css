@@ -1,0 +1,56 @@
+tfoot div:has(.product__discount)::before,
+tfoot div:has(.parcel__price)::before {
+  content: "";
+  position: absolute;
+  left: -17px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 100%;
+  background-color: white;
+  background-size: 50%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+tfoot div:has(.product__discount)::before {
+  background-image: url("/openMarket/images/icon-minus-line.svg");
+}
+
+tfoot div:has(.parcel__price)::before {
+  background-image: url("/openMarket/images/icon-plus-line.svg");
+}
+
+.cart__item__label input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.cart__item__label {
+    display: block;
+    width: 30px; height: 30px;
+    position: relative;
+}
+.cart__item__label::before,
+.cart__item__label::after {
+    content: "";
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 100%;
+}
+
+.cart__item__label::before {
+    width: 12px; height: 12px;
+}
+
+.cart__item__label::after {
+    width: 20px; height: 20px;
+    border: 2px solid #21BF48;
+}
+
+.cart__item__label:has(input[type="checkbox"]:checked)::before {
+    background-color: #21BF48;
+}
