@@ -1,4 +1,4 @@
-import { url } from "./main";
+import { root, url } from "./main";
 import "../css/details.css";
 import Modal from "./components/modal/Modal";
 
@@ -31,7 +31,6 @@ const fetchData = async (id = "") => {
     const res = await fetch(`${url}/products/${parseInt(id)}/`);
     if (res.ok) {
       const json = await res.json();
-      console.log(json);
       return json;
     }
   } catch (error) {
@@ -66,7 +65,11 @@ const template = async (id) => {
                     <strong class="text-[2.25rem] leading-[1]">${data.price.toLocaleString()}<span class="ml-[2px] font-normal text-[1.125rem]">원</span></strong>
                 </div>
                 <div class="grid gap-[30px] text-[1.125rem]">
-                    <p class="pb-[18px] text-[#767676] border-b-2 border-b-[#c4c4c4] ">택배배송 / 무료배송</p>
+                    <p class="pb-[18px] text-[#767676] border-b-2 border-b-[#c4c4c4] ">${
+                      data.shipping_method == "PARCEL" ? "택배배송" : "배달"
+                    } / ${
+    data.shipping_fee === 0 ? "무료배송" : `배송비: ${data.shipping_fee}원`
+  }</p>
                     <div class="quantity__wrap flex pb-[28px] border-b-2 border-b-[#c4c4c4]">
                         <button type="button" class="quantity__minus__btn rounded-[5px_0_0_5px] ${btnStyle} bg-[url('/openMarket/images/icon-minus-line.svg')]">빼기</button>
                         <p class="product__quantity w-[50px] text-center leading-[20px] py-[12px] border-t border-t-[#c4c4c4] border-b border-b-[#c4c4c4]">${
@@ -185,42 +188,49 @@ const Details = async (id) => {
     };
 
     const ModalEventHandler = () => {
-        window.location.href = "/openMarket/#cart";
+      if (user) {
+        window.location.hash = "cart";
+      } else {
+        window.location.hash = "login";
+      }
     };
 
-    const modalText = `이미 장바구니에 있는 상품입니다.<br/>
-    장바구니로 이동하시겠습니까?`;
+    // const modalText = `이미 장바구니에 있는 상품입니다.<br/>
+    // 장바구니로 이동하시겠습니까?`;
 
     if (!user) {
-      const cartCheck = sessionStorage.getItem("cart");
-      const cart = cartCheck ? JSON.parse(cartCheck) : [];
-
-      if (cart.length > 0) {
-        modal = Modal(modalText, ModalEventHandler, ModalCloseHandler);
-        inner.appendChild(modal);
-      } else {
-
-        const convertedPrice = totalPrice.textContent.replaceAll(",","");
-        const cartData = {
-          productId: temp.productId,
-          stock: quantity.textContent,
-          price: parseInt(convertedPrice),
-        };
-
-        cart.push(cartData);
-            sessionStorage.setItem("cart", JSON.stringify(cart));
-            alert("해당 상품이 장바구니에 담겼습니다.");
-      }
-    } else {
-      const cart = user.cart;
-      cart.forEach((el) => {
-        if (el.product_id === temp.productId) {
-          modal = Modal(modalText, ModalEventHandler, ModalCloseHandler);
-          inner.appendChild(modal);
-        } else {
-        }
-      });
+      modal = Modal(
+        `로그인이 필요한 서비스입니다.<br>로그인 하시겠습니까?`,
+        ModalEventHandler,
+        ModalCloseHandler
+      );
+      root.appendChild(modal);
+      localStorage.setItem("beforePage", window.location.hash);
+      return;
     }
+
+    const data = {
+      product_id: temp.productId,
+      quantity: parseInt(quantity.textContent),
+    };
+
+    const res = fetch(`${url}//cart/`, {
+      method: "POST",
+      headers: {
+        Authorization: `JWT ${user.token}`,
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    res
+      .then((res) => {
+        if (res.ok) {
+          alert(`해당 상품이 장바구니에 담겼습니다.\n장바구니로 이동합니다.`);
+          window.location.hash = "cart";
+        }
+      })
+      .catch((error) => console.error(error));
   };
 
   const sideInfoTabHandler = (activeTab, unactiveTab) => {
