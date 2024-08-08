@@ -1,5 +1,8 @@
+import Modal from "./components/modal/Modal";
+import { root } from "./main";
+
+const user = JSON.parse(localStorage.getItem("user"));
 const template = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
   let listArr = [];
   const myPageChildren = [
     {
@@ -10,6 +13,7 @@ const template = () => {
     {
       href: "#logout",
       text: "로그아웃",
+      class: "logout",
     },
   ];
 
@@ -46,7 +50,7 @@ const template = () => {
   const $header = `
         <section class="inner flex w-full bg-white py-[20px]">
             <div class="flex items-center grow gap-[30px]">
-                <a href="/openMarket">
+                <a href="/openMarket/">
                     <h1 class="w-[124px] h-[38px] indent-[-9999px] bg-[url('/images/Logo-hodu.png')] bg-no-repeat bg-cover">호두 오픈마켓</h1>
                 </a>
                 <label for="search-input" class="max-w-[400px] w-full flex items-center px-[22px] py-[9px] rounded-[50px] border-[2px] border-[#21BF48]">
@@ -73,7 +77,7 @@ const template = () => {
                           ${el.children
                             .map((item) => {
                               return `<li class="relative z-[1]">
-                                <a href="${item.href}" class="block text-center text-[#767676] w-full py-[10px] border rounded-[5px] border-white hover:border-[#767676] hover:text-black">${item.text}</a>
+                                <a href="${item.href}" class="block ${item.class} text-center text-[#767676] w-full py-[10px] border rounded-[5px] border-white hover:border-[#767676] hover:text-black">${item.text}</a>
                               </li>`;
                             })
                             .join("")}
@@ -97,8 +101,43 @@ const template = () => {
 export const Header = () => {
   const header = document.createElement("header");
   const headerTemp = template();
+  let modal = null;
   header.id = "header";
   header.insertAdjacentHTML("beforeend", headerTemp);
+
+  const cartBtn = header.querySelector(".cart");
+
+  const ModalCloseHandler = (e) => {
+    e.preventDefault();
+    modal && modal.remove();
+  };
+
+  const ModalEventHandler = (e) => {
+    e.preventDefault();
+    window.location.hash = "login";
+    localStorage.setItem("beforePage", window.location.hash);
+  };
+
+  header.addEventListener("click", (e) => {
+    if (e.target.classList.contains("logout")) {
+      e.preventDefault();
+      localStorage.setItem("beforePage", window.location.hash);
+      window.location.hash = "logout";
+    }
+  });
+  cartBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (user) {
+      window.location.hash = "cart";
+    } else {
+      modal = Modal(
+        `로그인이 필요한 서비스입니다.<br>로그인 하시겠습니까?`,
+        ModalEventHandler,
+        ModalCloseHandler
+      );
+      root.appendChild(modal);
+    }
+  });
 
   const myPage = header.querySelector(".myPage");
   if (myPage) {
