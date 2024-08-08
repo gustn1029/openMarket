@@ -53,7 +53,7 @@ label:has(#userPassword.check)::after,
 label:has(#userPassword-check.check)::after {
   background: url('/openMarket/images/icon-check-on.svg');
 }
-label:has(#userPassword.error)::after,
+/* label:has(#userPassword.error)::after, */
 label:has(#userPassword-check.error)::after {
   bottom: 38px;
 }
