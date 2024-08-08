@@ -18,6 +18,10 @@ html {
   scroll-behavior: smooth;
 }
 
+em {
+  font-style: normal;
+}
+
 .inner {
   max-width: 1340px;
   width: 100%;
@@ -59,7 +63,8 @@ input::-webkit-inner-spin-button {
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
   position: fixed;
   width: 100%;
-  left: 0; top: 0;
+  left: 0;
+  top: 0;
   z-index: 1000;
 }
 
@@ -76,7 +81,8 @@ input::-webkit-inner-spin-button {
 .nav__list > li ul::before {
   content: "";
   position: absolute;
-  left: 50%; top: -10px;
+  left: 50%;
+  top: -10px;
   width: 30px;
   height: 30px;
   background: url("/openMarket/images/polygon.svg") no-repeat center top;
@@ -85,24 +91,23 @@ input::-webkit-inner-spin-button {
 }
 
 .nav__list__item.seller {
-  background-image: url('/openMarket/images/icon-shopping-bag.svg')
+  background-image: url("/openMarket/images/icon-shopping-bag.svg");
 }
 
 .nav__list__item:has(.myPage),
 .nav__list__item:has(.login) {
-  background-image: url('/openMarket/images/icon-user.svg')
+  background-image: url("/openMarket/images/icon-user.svg");
 }
 
 .nav__list__item:has(.cart) {
-  background-image: url('/openMarket/images/icon-shopping-cart.svg')
+  background-image: url("/openMarket/images/icon-shopping-cart.svg");
 }
 
 .nav__list__item:has(.login):hover,
 .nav__list__item:has(.myPage):hover {
-  background-image: url('/openMarket/images/icon-user-2.svg')
+  background-image: url("/openMarket/images/icon-user-2.svg");
 }
 
 .nav__list__item:has(.cart):hover {
-  background-image: url('/openMarket/images/icon-shopping-cart-2.svg')
+  background-image: url("/openMarket/images/icon-shopping-cart-2.svg");
 }
-
