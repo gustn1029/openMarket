@@ -39,7 +39,7 @@ const template = async () => {
   const tdStyle = `px-[10px] py-[20px]`;
   const btnStyle = `w-[48px] h-[48px] indent-[-9999px] border border-[#c4c4c4] bg-no-repeat bg-center`;
   const emptyMessage = `
-                        <tr>
+                        <tr class="block">
                             <td colspan-"4" class="py-[175px] text-center">
                                 <div>
                                     <p class="text-[1.125rem] leading-[20px] mb-[20px]">장바구니에 담긴 상품이 없습니다.</p>
@@ -112,15 +112,25 @@ const template = async () => {
             <a href="/openMarket/#details/${el.product_id}">
                 <section class="flex gap-[36px]">
                     <h3 class="tag__hidden">상품 디테일 정보</h3>
-                        <img src="${el.image}" alt="${
-      el.product_name
-    }" class="w-full aspect-square max-w-[160px] w-full max-h-[160px] rounded-[5px]" />
+                        <img 
+                          src="${el.image}" 
+                          alt="${el.product_name}" 
+                          class="product__img__${
+                            el.cart_item_id
+                          } w-full aspect-square max-w-[160px] w-full max-h-[160px] rounded-[5px]" 
+                        />
                     <div class="flex grow flex-col justify-between">
                         <div class="grid gap-[10px]">
-                            <p class="text-[#767676] leading-[1] text-[0.875rem]">
+                            <p class="store__name__${
+                              el.cart_item_id
+                            } text-[#767676] leading-[1] text-[0.875rem]">
                             ${el.store_name}
                             </p>
-                            <h4 class="text-[1.125rem] leading-[2.25rem]">
+                            <h4 class="product__name__${
+                              el.cart_item_id
+                            } text-[1.125rem] leading-[2.25rem]" data-productId="${
+      el.product_id
+    }" data-active="${el.is_active}">
                                 ${el.product_name}
                             </h4>
                             <strong class="product__price__${
@@ -157,9 +167,11 @@ const template = async () => {
             <strong class="block leading-[20px] mb-[28px] text-[1.125rem] text-[#EB5757]"><span class="totalPrice__${
               el.cart_item_id
             }">${totalPrice}</span>원</strong>
-            <button type="button" data-productId="${
-              el.product_id
-            }" class="buy__btn leading-[20px] mx-auto px-[35px] py-[10px] bg-[#21BF48] text-white rounded-[5px]">주문하기</button>
+            <button type="button" data-cartId="${
+              el.cart_item_id
+            }" data-productId="${
+      el.product_id
+    }" class="item__order__btn leading-[20px] mx-auto px-[35px] py-[10px] bg-[#21BF48] text-white rounded-[5px]">주문하기</button>
              <button type="button" data-cartId="${
                el.cart_item_id
              }" class="delete__btn absolute right-[18px] top-[18px] rotate-45 w-[22px] h-[22px] indent-[-9999px] bg-[url('/openMarket/images/icon-plus-line.svg')] bg-no-repeat bg-center">삭제</button>
@@ -222,7 +234,7 @@ const template = async () => {
                 </tr>
             </tfoot>
         </table>
-        <button class="block mx-auto px-[65px] py-[19px] text-[1.5rem] text-white bg-[#21BF48] rounded-[5px] leading-[30px]">주문하기</button>
+        <button class="cart__sellect__order__btn block mx-auto px-[65px] py-[19px] text-[1.5rem] text-white bg-[#21BF48] rounded-[5px] leading-[30px]">주문하기</button>
     </section>
   `;
 
@@ -309,9 +321,7 @@ const Cart = async () => {
         : 0;
       const itemPrice = parseInt(price.textContent.replace(/[,\s원]/g, ""));
       const itemParcel = parseInt(convertedParcel);
-      console.log(itemParcel);
       parcelData += itemParcel;
-      console.log(parcelData);
       productPriceData += itemPrice - itemParcel;
       return sum + itemPrice;
     }, 0);
@@ -323,6 +333,7 @@ const Cart = async () => {
     allCheckbox.checked = checkboxs.length === setAmount.size;
   };
 
+  // 수량 수정할 때 실행되는 이벤트
   const quantityHandler = (btn, modalQuantity, stock) => {
     modalQuantity.textContent = cartQuantity;
     if (btn.classList.contains("modal__quantity__plus__btn")) {
@@ -340,6 +351,86 @@ const Cart = async () => {
     return cartQuantity;
   };
 
+  const orderBtnClickHandler = async (cartId) => {
+    let orderData = new Set();
+    let total = 0;
+    let orderType = "";
+    if (cartId) {
+      orderData.add(cartId);
+      orderType = "cart_one_order";
+    } else {
+      setAmount.forEach((el) => orderData.add(el));
+      orderType = "cart_order";
+    }
+    const products = [];
+
+    orderData.forEach(async (itemId) => {
+      const product = inner.querySelector(`.product__name__${itemId}`);
+      const productName = product.textContent.trim();
+      const productIsActive = product.getAttribute("data-active");
+      const productId = product.getAttribute("data-productId");
+      const productImage = inner
+        .querySelector(`.product__img__${itemId}`)
+        .getAttribute("src");
+      const productQuantity = inner
+        .querySelector(`.product__quantity__${itemId}`)
+        .textContent.trim();
+      const storeName = inner
+        .querySelector(`.store__name__${itemId}`)
+        .textContent.trim();
+      const shipping = inner
+        .querySelector(`.shipping__${itemId}`)
+        .textContent.split(" / ");
+      const shippingMethod = shipping[0];
+      const shippingFee = shipping[1].includes("배송비:") ? shipping[1].replace("배송비: ","") : shipping[1];
+      const totalPrice = inner.querySelector(`.totalPrice__${itemId}`);
+      const convertedPrice = totalPrice.textContent.replace(/[,\s원]/g, "");
+
+      const data = {
+        product_id: productId,
+        product_name: productName,
+        image: productImage,
+        quantity: productQuantity,
+        store_name: storeName,
+        shipping_method: shippingMethod,
+        shipping_fee: shippingFee,
+        total_price: totalPrice.textContent,
+      };
+
+      if (!productIsActive) {
+        await fetch(`${url}/${cartId}`, {
+          method: "PUT",
+          headers: {
+            Authorization: `JWT ${user.token}`,
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            product_id: parseInt(productId),
+            quantity: parseInt(productQuantity),
+            is_active: true,
+          }),
+        });
+      }
+
+      total += parseInt(convertedPrice);
+      products.push(data);
+    });
+
+    const order = {
+      orderType:orderType,
+      total: total,
+      products: products
+    }
+
+    if(products.length === 0) {
+      alert("구매하실 상품을 선택해주세요.");
+      return;
+    }
+    sessionStorage.setItem("order",JSON.stringify(order));
+    window.location.hash = "order";
+  };
+
+  // 모달 닫는 함수
   const ModalCloseHandler = () => {
     modal !== null && modal.remove();
     isModal = false;
@@ -411,7 +502,8 @@ const Cart = async () => {
       });
   };
 
-  inner.addEventListener("click", async (e) => {
+  // inner click시 실행되는 함수를 컨트롤 하는 함수
+  const controller = (e) => {
     const estimatedAmount = inner.querySelector(".estimated__amount");
     const parcelPrice = inner.querySelector(".parcel__price");
     const productPrice = inner.querySelector(".total__price");
@@ -443,7 +535,12 @@ const Cart = async () => {
         cartStock = quantity.getAttribute("data-stock");
         cartQuantity = quantity.textContent;
 
-        modal = Modal(cont, modalQuantityEventHandler, ModalCloseHandler, "cont");
+        modal = Modal(
+          cont,
+          modalQuantityEventHandler,
+          ModalCloseHandler,
+          "cont"
+        );
         modal.classList.add("quantity__modal");
         inner.appendChild(modal);
         modalQuantity = inner.querySelector(".modal__product__quantity");
@@ -468,7 +565,18 @@ const Cart = async () => {
         root.appendChild(modal);
       }
     }
-  });
+
+    if (
+      e.target.classList.contains("item__order__btn") ||
+      e.target.classList.contains("cart__sellect__order__btn")
+    ) {
+      e.preventDefault();
+      const cartid = e.target?.getAttribute("data-cartId");
+      orderBtnClickHandler(cartid);
+    }
+  };
+
+  inner.addEventListener("click", controller);
 
   return inner;
 };
