@@ -99,13 +99,13 @@ const template = async () => {
     const totalPrice =
       el.quantity === 0
         ? "매진"
-        : `${(el.price * el.quantity + el.shipping_fee).toLocaleString()}원`;
+        : `${(el.price * el.quantity + el.shipping_fee).toLocaleString()}`;
     return `<tr class="relative flex items-center rounded-[10px] border border-[#e0e0e0]">
         <td class="px-[30px]">
-            <label class="cart__item__label" for="${el.cart_item_id}">
+            <label class="cart__item__label" for="checkbox__${el.cart_item_id}">
                 <input type="checkbox" class="item__checkbox" value="${
                   el.cart_item_id
-                }" id="${el.cart_item_id}" />
+                }" id="checkbox__${el.cart_item_id}" />
             </label>
         </td>
         <td class="${tdStyle} flex-[2_4_0%]">
@@ -123,7 +123,9 @@ const template = async () => {
                             <h4 class="text-[1.125rem] leading-[2.25rem]">
                                 ${el.product_name}
                             </h4>
-                            <strong class="text-[1rem] leading-[1]">${el.price.toLocaleString()}원</strong>
+                            <strong class="product__price__${
+                              el.cart_item_id
+                            } text-[1rem] leading-[1]">${el.price.toLocaleString()}원</strong>
                         </div>
                         <p class="shipping__${
                           el.cart_item_id
@@ -139,19 +141,25 @@ const template = async () => {
             </a>
         </td>
         <td class="${tdStyle} flex-[1_4_0%]">
-            <div class="quantity__wrap flex justify-center">
+            <div data-cartId="${el.cart_item_id}" data-productId="${
+      el.product_id
+    }" class="quantity__wrap cursor-pointer flex justify-center">
                 <button type="button" class="quantity__minus__btn rounded-[5px_0_0_5px] ${btnStyle} bg-[url('/openMarket/images/icon-minus-line.svg')]">빼기</button>
-                <p class="product__quantity w-[50px] text-center leading-[20px] py-[12px] border-t border-t-[#c4c4c4] border-b border-b-[#c4c4c4]" data-stock="${
-                  el.stock
-                }">${el.quantity}</p>
+                <p class="product__quantity__${
+                  el.cart_item_id
+                } w-[50px] text-center leading-[20px] py-[12px] border-t border-t-[#c4c4c4] border-b border-b-[#c4c4c4]" data-stock="${
+      el.stock
+    }">${el.quantity}</p>
                 <button type="button" class="quantity__plus__btn rounded-[0_5px_5px_0] ${btnStyle} bg-[url('/openMarket/images/icon-plus-line.svg')]">더하기</button>
             </div>
         </td>
         <td class="${tdStyle} flex-[1_4_0%] text-center">
-            <strong class="block leading-[20px] mb-[28px] text-[1.125rem] text-[#EB5757] totalPrice__${
+            <strong class="block leading-[20px] mb-[28px] text-[1.125rem] text-[#EB5757]"><span class="totalPrice__${
               el.cart_item_id
-            }">${totalPrice}</strong>
-            <button class="buy__btn leading-[20px] mx-auto px-[35px] py-[10px] bg-[#21BF48] text-white rounded-[5px]">주문하기</button>
+            }">${totalPrice}</span>원</strong>
+            <button type="button" data-productId="${
+              el.product_id
+            }" class="buy__btn leading-[20px] mx-auto px-[35px] py-[10px] bg-[#21BF48] text-white rounded-[5px]">주문하기</button>
              <button type="button" data-cartId="${
                el.cart_item_id
              }" class="delete__btn absolute right-[18px] top-[18px] rotate-45 w-[22px] h-[22px] indent-[-9999px] bg-[url('/openMarket/images/icon-plus-line.svg')] bg-no-repeat bg-center">삭제</button>
@@ -227,10 +235,19 @@ const template = async () => {
 const Cart = async () => {
   const inner = document.createElement("div");
   let temp = await template();
-  let modal = null;
+  // 삭제할 아이디를 담을 변수
   let deleteId = null;
+  // 모달이 있을 때는 모달 태그로 초기화 됨
+  let modal = null;
+  let modalQuantity = null;
+  // 모달이 띄워져 있는지 확인
+  let isModal = false;
   // 선택한 카트 아이디의 최종 금액, 배송비, 할인을 저장하는 set
   let setAmount = new Set();
+  let cartId = "";
+  let productId = 0;
+  let cartQuantity = 0;
+  let cartStock = 0;
 
   inner.classList.add("inner");
   inner.insertAdjacentHTML("beforeend", temp.template);
@@ -253,10 +270,13 @@ const Cart = async () => {
     document.documentElement.scrollTop = 0;
   };
 
-  const checkboxHandler = (checkbox) => {
-    const estimatedAmount = inner.querySelector(".estimated__amount");
-    const parcelPrice = inner.querySelector(".parcel__price");
-    const productPrice = inner.querySelector(".total__price");
+  // 체크박스 이벤트 실행 함수
+  const checkboxHandler = (
+    checkbox,
+    estimatedAmount,
+    parcelPrice,
+    productPrice
+  ) => {
     const checkboxs = inner.querySelectorAll(".item__checkbox");
     const allCheckbox = inner.querySelector("#check__all");
     let parcelData = 0;
@@ -303,11 +323,69 @@ const Cart = async () => {
     allCheckbox.checked = checkboxs.length === setAmount.size;
   };
 
-  const ModalCloseHandler = () => {
-    modal !== null && modal.remove();
+  const quantityHandler = (btn, modalQuantity, stock) => {
+    modalQuantity.textContent = cartQuantity;
+    if (btn.classList.contains("modal__quantity__plus__btn")) {
+      if (stock > parseInt(modalQuantity.textContent)) {
+        modalQuantity.textContent = ++cartQuantity;
+      } else {
+        alert(`이 상품은 최대 ${stock}까지 구매 가능합니다.`);
+      }
+    } else if (btn.classList.contains("modal__quantity__minus__btn")) {
+      if (1 < parseInt(modalQuantity.textContent)) {
+        modalQuantity.textContent = --cartQuantity;
+      }
+    }
+
+    return cartQuantity;
   };
 
-  const modalEventHandler = () => {
+  const ModalCloseHandler = () => {
+    modal !== null && modal.remove();
+    isModal = false;
+  };
+
+  // 상품 수량 수정 모달 이벤트
+  const modalQuantityEventHandler = () => {
+    const loading = Loading();
+    inner.appendChild(loading);
+
+    const data = {
+      product_id: parseInt(productId),
+      quantity: cartQuantity,
+      is_active: false,
+    };
+    const res = fetch(`${url}/cart/${cartId}/`, {
+      method: "PUT",
+      headers: {
+        Authorization: `JWT ${user.token}`,
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    res
+      .then(async (res) => {
+        if (res.ok) {
+          ModalCloseHandler();
+          cartId = "";
+          cartQuantity = 0;
+          cartStock = 0;
+          productId = "";
+          const newData = await template();
+          inner.innerHTML = "";
+          inner.insertAdjacentHTML("beforeend", newData.template);
+        }
+      })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        loading.remove();
+        isModal = false;
+      });
+  };
+
+  // 상품 삭제 모달 이벤트
+  const modalDeleteEventHandler = () => {
     const loading = Loading();
     inner.appendChild(loading);
     const res = fetch(`${url}/cart/${deleteId}`, {
@@ -334,6 +412,9 @@ const Cart = async () => {
   };
 
   inner.addEventListener("click", async (e) => {
+    const estimatedAmount = inner.querySelector(".estimated__amount");
+    const parcelPrice = inner.querySelector(".parcel__price");
+    const productPrice = inner.querySelector(".total__price");
     if (e.target.classList.contains("prev__btn")) {
       e.preventDefault();
       paginationHandler(pagination.prev);
@@ -343,18 +424,49 @@ const Cart = async () => {
       paginationHandler(pagination.next);
     }
 
+    if (
+      e.target.parentNode.classList.contains("quantity__wrap") ||
+      e.target.parentNode.classList.contains("quantity__modal")
+    ) {
+      const btnStyle = `w-[48px] h-[48px] indent-[-9999px] border border-[#c4c4c4] bg-no-repeat bg-center`;
+      const cont = `
+          <div class="quantity__wrap cursor-pointer flex justify-center">
+              <button type="button" class="modal__quantity__minus__btn rounded-[5px_0_0_5px] ${btnStyle} bg-[url('/openMarket/images/icon-minus-line.svg')]">빼기</button>
+              <p class="modal__product__quantity w-[50px] text-center leading-[20px] py-[12px] border-t border-t-[#c4c4c4] border-b border-b-[#c4c4c4]">0</p>
+              <button type="button" class="modal__quantity__plus__btn rounded-[0_5px_5px_0] ${btnStyle} bg-[url('/openMarket/images/icon-plus-line.svg')]">더하기</button>
+            </div>
+      `;
+      if (!isModal) {
+        cartId = e.target.parentNode.getAttribute("data-cartid");
+        productId = e.target.parentNode.getAttribute("data-productId");
+        const quantity = inner.querySelector(`.product__quantity__${cartId}`);
+        cartStock = quantity.getAttribute("data-stock");
+        cartQuantity = quantity.textContent;
+
+        modal = Modal(cont, modalQuantityEventHandler, ModalCloseHandler, "cont");
+        modal.classList.add("quantity__modal");
+        inner.appendChild(modal);
+        modalQuantity = inner.querySelector(".modal__product__quantity");
+        isModal = true;
+      }
+      quantityHandler(e.target, modalQuantity, cartStock);
+    }
+
     if (e.target.nodeName === "INPUT") {
-      checkboxHandler(e.target);
+      checkboxHandler(e.target, estimatedAmount, parcelPrice, productPrice);
     }
 
     if (e.target.classList.contains("delete__btn")) {
       deleteId = e.target.getAttribute("data-cartId");
-      modal = Modal(
-        "상품을 삭제하시겠습니까?",
-        modalEventHandler,
-        ModalCloseHandler
-      );
-      root.appendChild(modal);
+      if (!isModal) {
+        modal = Modal(
+          "상품을 삭제하시겠습니까?",
+          modalDeleteEventHandler,
+          ModalCloseHandler
+        );
+        isModal = true;
+        root.appendChild(modal);
+      }
     }
   });
 
