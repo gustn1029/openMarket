@@ -34,16 +34,17 @@ const template = () => {
                 </ul>
                 <section class="user__section relative z-[1] customer grid gap-[12px] mb-[14px]">
                     <div class="flex items-end gap-[12px]">
-                        ${LabelInput("userId", "아이디", "text", "flex-1")}
+                        ${LabelInput("userId", "아이디", "text","join__input", "flex-1")}
                     <button class="btn__green id__check__btn" type="submit">중복 확인</button>
                     </div>
-                    ${LabelInput("userPassword", "비밀번호", "password")}
+                    ${LabelInput("userPassword", "비밀번호", "password","join__input")}
                     ${LabelInput(
                       "userPassword-check",
                       "비밀번호 재확인",
-                      "password"
+                      "password",
+                      "join__input"
                     )}
-                    ${LabelInput("userName", "이름")}
+                    ${LabelInput("userName", "이름","text","join__input")}
                     <div class="grid grid-cols-3 gap-x-[12px]">
                         <strong class="col-span-3">휴대폰 번호</strong>
                         <div class="select__wrap">
@@ -136,11 +137,12 @@ export const Join = () => {
           "userBusinessNumber",
           "사업자 등록번호",
           "number",
+          "join__input",
           "flex-1"
         )}
         <button class="btn__green  busness__number__check__btn" type="submit">인증</button>
       </div>
-      ${LabelInput("userStoreName", "스토어 이름")}
+      ${LabelInput("userStoreName", "스토어 이름","text","join__input")}
     `;
     sellerFormAddDiv.classList.add("user__seller__form__add__wrap");
     sellerFormAddDiv.insertAdjacentHTML("beforeend", sellerFormAdd);
