@@ -1,0 +1,156 @@
+.form__wrap > div {
+  padding: 8px 0;
+  border-bottom: 1px solid #c4c4c4;
+}
+
+.form__wrap strong {
+  font-weight: 400;
+}
+
+.order__label,
+.order__label__phone,
+.order__label__address,
+.order__label__address > div > label,
+.order__label__message {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.order__label__address {
+  align-items: start;
+}
+
+.order__label__address > div {
+  display: flex;
+  gap: 8px;
+  max-width: 800px;
+  width: 100%;
+  flex-direction: column;
+}
+
+.order__label__address .zipCode__wrap {
+  display: flex;
+  gap: 10px;
+}
+
+.order__label__address .zipCode__btn {
+  border-radius: 5px;
+  background-color: #21bf48;
+  color: white;
+  font-size: 1rem;
+  line-height: 20px;
+  padding: 10px 30px;
+}
+
+.order__label__address .zipCode__wrap input {
+  width: 170px;
+}
+
+.order__label,
+.order__label__phone {
+  max-width: 504px;
+}
+.order__label__address,
+.order__label__message {
+  max-width: 970px;
+}
+
+.order__label__phone span,
+.order__label__address span {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+}
+
+.order__label > div {
+  display: flex;
+  gap: 27px;
+}
+
+.order__label.address > div {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.order__label .order__label__phone:nth-child(1) {
+  width: 80px;
+}
+.order__label .order__label__phone:nth-child(2),
+.order__label .order__label__phone:nth-child(3) {
+  width: 100px;
+}
+
+.order__input {
+  display: block;
+  width: 100%;
+  line-height: 20px;
+  font-size: 1.125rem;
+  padding: 10px 15px;
+  border: 1px solid #c4c4c4;
+}
+
+.order__label > .order__input {
+  max-width: 334px;
+  flex-grow: 1;
+}
+
+.order__label__phone .order__input,
+.order__label__address .order__input,
+.order__label__message .order__input {
+  max-width: 800px;
+  flex-grow: 1;
+}
+
+.payment {
+  display: flex;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #c4c4c4;
+  font-size: 1rem;
+}
+.payment label {
+  padding-left: 30px;
+  cursor: pointer;
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.payment input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.payment label p::before,
+.payment label p::after {
+  content: "";
+  position: absolute;
+  border-radius: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.payment label p::before {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #c4c4c4;
+  left: 0;
+}
+
+.payment label p::after {
+  left: 3px;
+  width: 12px;
+  height: 12px;
+}
+
+.payment label input[type="radio"]:checked + p::after {
+  background-color: #767676;
+}
