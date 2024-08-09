@@ -1,8 +1,8 @@
-const LabelInput = (id, labelText, type = "text", labelClassName = "") => {
+const LabelInput = (id, labelText, type = "text",inputClass="", labelClass = "") => {
     return `
-      <label for="${id}" class="${labelClassName} relative">
+      <label for="${id}" class="${labelClass} relative">
           <span>${labelText}</span>
-          <input class="join__input" type="${type}" id="${id}" required />
+          <input class="${inputClass}" type="${type}" id="${id}" required />
       </label>
     `;
   };
