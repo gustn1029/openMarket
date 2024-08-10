@@ -1,3 +1,12 @@
+/* 선택 방지 */
+.payment label,
+.finally__order__wrap label {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 .form__wrap > div {
   padding: 8px 0;
   border-bottom: 1px solid #c4c4c4;
@@ -77,12 +86,27 @@
   gap: 8px;
 }
 
+.order__label .order__label__phone {
+  position: relative;
+}
+
 .order__label .order__label__phone:nth-child(1) {
   width: 80px;
 }
 .order__label .order__label__phone:nth-child(2),
 .order__label .order__label__phone:nth-child(3) {
   width: 100px;
+}
+
+.order__label .order__label__phone:nth-child(2)::before,
+.order__label .order__label__phone:nth-child(3)::before {
+  content: "";
+  width: 7px; height: 1px;
+  background-color: black;
+  position: absolute;
+  left: -17px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .order__input {
@@ -117,10 +141,6 @@
   padding-left: 30px;
   cursor: pointer;
   position: relative;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 .payment input[type="radio"] {
@@ -145,6 +165,7 @@
   left: 0;
 }
 
+/* 결제 수단 영역 */
 .payment label p::after {
   left: 3px;
   width: 12px;
@@ -153,4 +174,121 @@
 
 .payment label input[type="radio"]:checked + p::after {
   background-color: #767676;
+}
+
+/* 최종 결제 정보 영역 */
+.finally__order__list {
+  padding: 34px 0 0;
+  border: 2px solid #21bf48;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.finally__order__list ul {
+  display: grid;
+  gap: 12px;
+  padding: 0 30px;
+  margin-bottom: 20px;
+}
+.finally__order__list ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.finally__order__list ul li.finally__total__price__wrap {
+  padding-top: 24px;
+  border-top: 1px solid #c4c4c4;
+}
+
+.finally__order__list ul li.finally__total__price__wrap strong {
+  font-size: 1.5rem;
+  color: #eb5757;
+  font-weight: bold;
+  line-height: 30px;
+}
+
+.finally__order__list ul li p {
+  padding-left: 12px;
+  position: relative;
+}
+.finally__order__list ul li p::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 1px;
+  background-color: black;
+}
+
+.finally__order__list ul li:not(.finally__total__price__wrap) span {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #767676;
+}
+
+.finally__order__wrap {
+  padding: 30px 30px 34px;
+  background-color: #f2f2f2;
+}
+
+.finally__order__wrap label {
+  display: block;
+  margin-bottom: 30px;
+}
+.finally__order__wrap label p {
+  padding-left: 26px;
+  position: relative;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.finally__order__wrap label p::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background: url("/openMarket/images/check-box.svg");
+}
+
+.finally__order__wrap input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.finally__order__wrap label input[type="checkbox"]:checked + p {
+  color: #222;
+}
+
+.finally__order__wrap label input[type="checkbox"]:checked + p::before {
+  background: url("/openMarket/images/check-fill-box.svg");
+}
+
+.order__submit__btn {
+  display: block;
+  margin: 0 auto;
+  font-size: 1.5rem;
+  line-height: 30px;
+  padding: 20px 65px;
+  background-color: #C4C4C4;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: all 0.3s;
+}
+.order__submit__btn.on {
+  background-color: #21bf48;
+}
+
+#order .error__message {
+  margin-top: 5px;
+  padding-left: 170px;
+}
+#order .zipCode__wrap + .error__message {
+  padding-left: 0;
 }
