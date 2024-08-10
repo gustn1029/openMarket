@@ -6,6 +6,7 @@ import Cart from "../cart.js";
 import Loading from "./loading/Loading.js";
 import { root } from "../main.js";
 import Order from "../order.js";
+import Footer from "../footer.js";
 
 const Home = async (content = "", id = "") => {
   const $main = document.createElement("main");
@@ -26,6 +27,7 @@ const Home = async (content = "", id = "") => {
   root.innerHTML = "";
   root.appendChild(Header());
   root.appendChild($main);
+  root.appendChild(Footer());
   loading.remove();
 
   return root;
