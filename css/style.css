@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @font-face {
+  font-family: "SpoqaHanSansNeo-Light";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SpoqaHanSansNeo-Regular.woff")
+    format("woff");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
   font-family: "SpoqaHanSansNeo-Regular";
   src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SpoqaHanSansNeo-Regular.woff")
     format("woff");
@@ -26,6 +34,10 @@
   font-style: normal;
 }
 
+.sans-light {
+  font-family: "SpoqaHanSansNeo-Light";
+}
+
 .sans-medium {
   font-family: "SpoqaHanSansNeo-Medium";
 }
@@ -42,6 +54,7 @@ html {
   scroll-behavior: smooth;
 }
 
+address,
 em {
   font-style: normal;
 }
@@ -134,4 +147,24 @@ input::-webkit-inner-spin-button {
 
 .nav__list__item:has(.cart):hover {
   background-image: url("/openMarket/images/icon-shopping-cart-2.svg");
+}
+
+/* footer */
+#footer {
+  padding: 54px 0 63px;
+  background-color: #F2F2F2;
+}
+
+#footer .terms__list li {
+  position: relative;
+}
+
+#footer .terms__list li::before {
+  content: "";
+  position: absolute;
+  width: 1px; height: 80%;
+  background-color: black;
+  left: -16px;
+  top: 50%;
+  transform: translateY(-50%);
 }
