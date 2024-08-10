@@ -6,7 +6,7 @@ const template = () => {
   let listArr = [];
   const myPageChildren = [
     {
-      href: "#my-page",
+      href: "#",
       text: "마이페이지",
       class: "myPage",
     },
@@ -139,9 +139,9 @@ export const Header = () => {
     }
   });
 
-  const myPage = header.querySelector(".myPage");
-  if (myPage) {
-    myPage.addEventListener("click", (e) => e.preventDefault());
+  const myPage = header.querySelectorAll(".myPage");
+  if (myPage.length > 0) {
+    myPage.forEach((el)=> el.addEventListener("click", (e) => e.preventDefault()));
   }
 
   return header;
