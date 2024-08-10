@@ -15,14 +15,17 @@ const detailFetchData = async (id = "") => {
   }
 };
 
-const fetchData = async () => {
+const fetchData = async (page = "") => {
   try {
-    const res = await fetch(`${url}/cart/`, {
-      method: "get",
-      headers: {
-        Authorization: `JWT ${user.token}`,
-      },
-    });
+    const res = await fetch(
+      `${url}/cart/${page !== "" ? `?page=${page}` : ""}`,
+      {
+        method: "get",
+        headers: {
+          Authorization: `JWT ${user.token}`,
+        },
+      }
+    );
     if (res.ok) {
       const json = await res.json();
       return json;
@@ -32,7 +35,7 @@ const fetchData = async () => {
   }
 };
 
-const template = async () => {
+const template = async (page = "") => {
   const data = await fetchData();
   console.log(data);
   // 공통 스타일
@@ -182,7 +185,7 @@ const template = async () => {
   const temp = `
     <section>
         <h2 class="mb-[52px] text-[2.25rem] leading-[2.75rem] font-bold text-center">장바구니</h2>
-        <table class="w-full grid mb-[40px]">
+        <table class="w-full grid mb-[80px]">
             <thead class=" mb-[35px] text-center rounded-[10px] bg-[#f2f2f2] py-[18px]">
                 <tr class="flex items-center">
                     <th class="px-[30px] text-left">
@@ -195,45 +198,53 @@ const template = async () => {
                     <th class="flex-[1_4_0%]">상품금액</th>
                 </tr>
             </thead>
-            <tbody class="grid gap-[10px] mb-[80px]">
+            <tbody class="grid gap-[10px] mb-[30px]">
             ${data.results.length > 0 ? list.join("") : emptyMessage}
             </tbody>
             <tfoot>
                 <tr class="block">
-                    <td colspan="4" class="flex w-full pt-[46px] pb-[34px] text-center bg-[#F2F2F2] rounded-[10px]">
-                    ${tfootData
-                      .map((el, idx) => {
-                        return `
-                            <div class="w-[25%] relative">
-                                <strong class="block mb-[12px] ${
-                                  idx === tfootData.length - 1
-                                    ? "font-bold"
-                                    : "font-normal"
-                                } leading-[20px]">
-                                    ${el.title}
-                                </strong>
-                                <p class="leading-[45px] ${
-                                  idx === tfootData.length - 1
-                                    ? "text-[2.25rem] text-[#EB5757]"
-                                    : "text-[1.5rem]"
-                                }">
-                                    <em class="${el.className} font-bold">
-                                        ${el.price}
-                                    </em>
-                                    <span class="${
-                                      idx === tfootData.length - 1
-                                        ? "text-[1.125rem]"
-                                        : "text-[1rem]"
-                                    }">원</span>
-                                </p>
-                            </div>
-                            `;
-                      })
-                      .join("")}
-                    </td>
+                  <td colspan="4" class="block text-center">
+                    <button class="${
+                      data.previous ? "prev__btn" : "text-[#c4c4c4]"
+                    } mr-[20px]" type="button">prev</button>
+                    <button class="${
+                      data.next ? "next__btn" : "text-[#c4c4c4]"
+                    }" type="button">next</button>
+                  </td>
                 </tr>
             </tfoot>
         </table>
+        <div class="mb-[30px] flex w-full pt-[46px] pb-[34px] text-center bg-[#F2F2F2] rounded-[10px]">
+        ${tfootData
+          .map((el, idx) => {
+            return `
+                <div class="w-[25%] relative">
+                    <strong class="block mb-[12px] ${
+                      idx === tfootData.length - 1
+                        ? "font-bold"
+                        : "font-normal"
+                    } leading-[20px]">
+                        ${el.title}
+                    </strong>
+                    <p class="leading-[45px] ${
+                      idx === tfootData.length - 1
+                        ? "text-[2.25rem] text-[#EB5757]"
+                        : "text-[1.5rem]"
+                    }">
+                        <em class="${el.className} font-bold">
+                            ${el.price}
+                        </em>
+                        <span class="${
+                          idx === tfootData.length - 1
+                            ? "text-[1.125rem]"
+                            : "text-[1rem]"
+                        }">원</span>
+                    </p>
+                </div>
+                `;
+          })
+          .join("")}
+        </div>
         <button class="cart__sellect__order__btn block mx-auto px-[65px] py-[19px] text-[1.5rem] text-white bg-[#21BF48] rounded-[5px] leading-[30px]">주문하기</button>
     </section>
   `;
@@ -351,9 +362,12 @@ const Cart = async () => {
     return cartQuantity;
   };
 
+  // 주문하기 버튼 클릭 시 실행되는 함수
   const orderBtnClickHandler = async (cartId) => {
     let orderData = new Set();
     let total = 0;
+    let parcelFee = 0;
+    let discount = 0;
     let orderType = "";
     if (cartId) {
       orderData.add(cartId);
@@ -364,7 +378,7 @@ const Cart = async () => {
     }
     const products = [];
 
-    orderData.forEach(async (itemId) => {
+    const convertedProducts = [...orderData].map(async (itemId) => {
       const product = inner.querySelector(`.product__name__${itemId}`);
       const productName = product.textContent.trim();
       const productIsActive = product.getAttribute("data-active");
@@ -382,7 +396,9 @@ const Cart = async () => {
         .querySelector(`.shipping__${itemId}`)
         .textContent.split(" / ");
       const shippingMethod = shipping[0];
-      const shippingFee = shipping[1].includes("배송비:") ? shipping[1].replace("배송비: ","") : shipping[1];
+      const shippingFee = shipping[1].includes("배송비:")
+        ? shipping[1].replace("배송비: ", "")
+        : shipping[1];
       const totalPrice = inner.querySelector(`.totalPrice__${itemId}`);
       const convertedPrice = totalPrice.textContent.replace(/[,\s원]/g, "");
 
@@ -397,8 +413,8 @@ const Cart = async () => {
         total_price: totalPrice.textContent,
       };
 
-      if (!productIsActive) {
-        await fetch(`${url}/${cartId}`, {
+      if (productIsActive === "false") {
+        await fetch(`${url}/cart/${itemId}/`, {
           method: "PUT",
           headers: {
             Authorization: `JWT ${user.token}`,
@@ -412,21 +428,32 @@ const Cart = async () => {
         });
       }
 
+      if (shippingFee.includes("원")) {
+        const convertedFee = shippingFee.replace(/[,\s원]/g, "");
+        const fee = parseInt(convertedFee);
+
+        parcelFee += fee;
+      }
+
       total += parseInt(convertedPrice);
       products.push(data);
     });
 
-    const order = {
-      orderType:orderType,
-      total: total,
-      products: products
-    }
+    await Promise.all(convertedProducts);
 
-    if(products.length === 0) {
+    const order = {
+      orderType: orderType,
+      total: total,
+      parcel: parcelFee,
+      discount: discount,
+      products: products,
+    };
+
+    if (products.length === 0) {
       alert("구매하실 상품을 선택해주세요.");
       return;
     }
-    sessionStorage.setItem("order",JSON.stringify(order));
+    sessionStorage.setItem("order", JSON.stringify(order));
     window.location.hash = "order";
   };
 
