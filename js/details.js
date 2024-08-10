@@ -133,9 +133,7 @@ const template = async (id) => {
 
   return {
     detail: detail,
-    stock: data.stock,
-    price: data.price,
-    productId: data.product_id,
+    data: data
   };
 };
 
@@ -145,6 +143,9 @@ const Details = async (id) => {
   const inner = document.createElement("div");
   inner.classList.add("inner");
   inner.insertAdjacentHTML("beforeend", temp.detail);
+
+  let isModal = false;
+  let modal = null;
 
   const quantityWrap = inner.querySelector(".quantity__wrap");
   const quantity = inner.querySelector(".product__quantity");
@@ -160,61 +161,90 @@ const Details = async (id) => {
     const btnText = btn.textContent;
     const convertedPrice = totalPrice.textContent.replaceAll(",", "");
     if (btnText === "더하기") {
-      if (temp.stock > parseInt(quantity.textContent)) {
+      if (temp.data.stock > parseInt(quantity.textContent)) {
         quantity.textContent = ++quantity.textContent;
         totalQuantity.textContent = quantity.textContent;
         totalPrice.textContent = (
-          parseInt(convertedPrice) + temp.price
-        ).toLocaleString();
+          parseInt(convertedPrice) + temp.data.price).toLocaleString();
       } else {
-        alert(`이 상품은 최대 ${temp.stock}까지 구매 가능합니다.`);
+        alert(`이 상품은 최대 ${temp.data.stock}까지 구매 가능합니다.`);
       }
     } else if (btnText === "빼기") {
       if (1 < parseInt(quantity.textContent)) {
         quantity.textContent = --quantity.textContent;
         totalQuantity.textContent = quantity.textContent;
         totalPrice.textContent = (
-          parseInt(convertedPrice) - temp.price
-        ).toLocaleString();
+          parseInt(convertedPrice) - temp.data.price).toLocaleString();
       }
     }
-    console.log(quantity.textContent);
+  };
+
+  const buyBtnClickHandler = () => {
+    const shippingMethod = temp.data.shipping_method === "PARCEL" ? "택배배송":"배달";
+    let shippingFee = temp.data.shipping_fee;
+    const price = totalPrice.textContent.replace(",","");
+    let totalOrderPrice = parseInt(price) + shippingFee;
+    const orderType = "direct_order";
+    const discount = 0;
+
+    const data = {
+      product_id: temp.data.product_id,
+      product_name: temp.data.product_name,
+      image: temp.data.image,
+      quantity: quantity.textContent,
+      store_name: temp.data.store_name,
+      shipping_method: shippingMethod,
+      shipping_fee: shippingFee === 0 ? "무료배송": `${(shippingFee).toLocaleString()}원`,
+      total_price: totalOrderPrice,
+    };
+
+    const order = {
+      orderType: orderType,
+      total: totalOrderPrice,
+      parcel: shippingFee,
+      discount: discount,
+      products: [data],
+    };
+
+    sessionStorage.setItem("order", JSON.stringify(order));
+    window.location.hash = "order";
+  }
+
+  const ModalCloseHandler = () => {
+    modal !== null && modal.remove();
+    isModal = false;
+  };
+
+  const ModalEventHandler = () => {
+    if (user) {
+      window.location.hash = "cart";
+    } else {
+      window.location.hash = "login";
+    }
   };
 
   const cartBtnClickHandler = () => {
-    let modal = null;
-    const ModalCloseHandler = () => {
-      modal !== null && modal.remove();
-    };
-
-    const ModalEventHandler = () => {
-      if (user) {
-        window.location.hash = "cart";
-      } else {
-        window.location.hash = "login";
-      }
-    };
-
-    // const modalText = `이미 장바구니에 있는 상품입니다.<br/>
-    // 장바구니로 이동하시겠습니까?`;
-
+    
     if (!user) {
-      modal = Modal(
-        `로그인이 필요한 서비스입니다.<br>로그인 하시겠습니까?`,
-        ModalEventHandler,
-        ModalCloseHandler
-      );
-      root.appendChild(modal);
+      if(!isModal) {
+        modal = Modal(
+          `로그인이 필요한 서비스입니다.<br>로그인 하시겠습니까?`,
+          ModalEventHandler,
+          ModalCloseHandler
+        );
+        root.appendChild(modal);
+        isModal = true;
+      }
       localStorage.setItem("beforePage", window.location.hash);
       return;
     }
 
     const data = {
-      product_id: temp.productId,
+      product_id: temp.data.product_id,
       quantity: parseInt(quantity.textContent),
     };
 
-    const res = fetch(`${url}//cart/`, {
+    const res = fetch(`${url}/cart/`, {
       method: "POST",
       headers: {
         Authorization: `JWT ${user.token}`,
@@ -226,8 +256,15 @@ const Details = async (id) => {
     res
       .then((res) => {
         if (res.ok) {
-          alert(`해당 상품이 장바구니에 담겼습니다.\n장바구니로 이동합니다.`);
-          window.location.hash = "cart";
+          if(!isModal) {
+            modal = Modal(
+              `해당 상품이 장바구니에 담겼습니다.<br>장바구니로 이동하시겠습니까?`,
+              ModalEventHandler,
+              ModalCloseHandler
+            );
+            root.appendChild(modal);
+            isModal = true;
+          }
         }
       })
       .catch((error) => console.error(error));
@@ -257,9 +294,7 @@ const Details = async (id) => {
     }
   });
 
-  buyBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
-  });
+  buyBtn.addEventListener("click", buyBtnClickHandler);
 
   cartBtn.addEventListener("click", (e) => {
     e.preventDefault();
