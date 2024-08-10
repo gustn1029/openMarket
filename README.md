@@ -300,7 +300,7 @@ gantt
         </tr>
         <tr>
             <td>로그인</td>
-            <td><img src="./public/public/images/readme/login.png" alt="호두샵 로그인 페이지"></td>
+            <td><img src="./public/public/readme/login.png" alt="호두샵 로그인 페이지"></td>
         </tr>
         <tr>
             <td>회원가입</td>
