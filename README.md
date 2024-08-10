@@ -292,34 +292,14 @@ gantt
 
 ## 6 화면 설계
  
-<table>
-    <tbody>
-        <tr>
-            <td>메인</td>
-            <td><img src="./public/images/readme/main.png" alt="호두샵 메인페이지"></td>
-        </tr>
-        <tr>
-            <td>로그인</td>
-            <td><img src="./public/images/readme/login.png" alt="호두샵 로그인 페이지"></td>
-        </tr>
-        <tr>
-            <td>회원가입</td>
-            <td><img src="./public/images/readme/join.png" alt="호두샵 회원가입 페이지"></td>
-        </tr>
-        <tr>
-            <td>상세</td>
-            <td><img src="./public/images/readme/details.png" alt="호두샵 상세 페이지"></td>
-        </tr>
-        <tr>
-            <td>장바구니</td>
-            <td><img src="./public/images/readme/cart.png" alt="호두샵 장바구니 페이지"></td>
-        </tr>
-        <tr>
-            <td>주문/결제</td>
-            <td><img src="./public/images/readme/order.png" alt="호두샵 주문/결제 페이지"></td>
-        </tr>
-    </tbody>
-</table>
+| 페이지      | 이미지                             |
+|--------------|------------------------------------|
+| 메인         | ![메인페이지](./images/readme/main.png) |
+| 로그인       | ![로그인 페이지](./images/readme/login.png) |
+| 회원가입     | ![회원가입 페이지](./images/readme/join.png) |
+| 상세         | ![상세 페이지](./images/readme/details.png) |
+| 장바구니     | ![장바구니 페이지](./images/readme/cart.png) |
+| 주문/결제    | ![주문/결제 페이지](./images/readme/order.png) |
 
 ## 7. 에러와 에러 해결
 | **에러** | **에러 해결**| 
