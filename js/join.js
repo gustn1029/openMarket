@@ -65,7 +65,7 @@ const template = () => {
                 <div class="sign__up px-[35px] grid place-items-center gap-[34px]">
                     <label class="join__checkbox" for="join__checkbox">
                         <input type="checkbox" id="join__checkbox" />
-                        <p>호두샵의 <em>이용약관</em> 및 <em>개인정보처리방침</em>에 대한 내용을 확인하였고 동의합니다.</p>
+                        <span>호두샵의 <em>이용약관</em> 및 <em>개인정보처리방침</em>에 대한 내용을 확인하였고 동의합니다.</span>
                     </label>
                     <button class="btn join__btn" type="submit">가입하기</button>
                 </div>
