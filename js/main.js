@@ -15,23 +15,27 @@ const router = async () => {
   root.innerHTML = "";
   if (!hash) {
     await Home();
-  } else if (!user) {
-    if (hash === "login") {
+  } else if (hash === "login") {
+    if (!user) {
       Login();
-    } else if (hash === "sign-up") {
+    }
+  } else if (hash === "sign-up") {
+    if (!user) {
       Join();
     }
   } else if (hash === "logout") {
     Logout();
   } else if (hash.includes("details")) {
     const [content, id] = hash.split("/");
+    console.log(content, "content");
+    console.log(content, "content");
     await Home(content, id);
   } else if (hash === "cart") {
     await Home("cart");
-  }else if (hash === "order") {
+  } else if (hash === "order") {
     await Home("order");
-  }  else {
-    window.location.href = "/openMarket/"
+  } else {
+    window.location.href = "/openMarket/";
   }
 };
 
