@@ -1,9 +1,10 @@
-import { root, url, user } from "./main";
+import { root, url } from "./main";
 import "../css/cart.css";
 import Modal from "./components/modal/Modal";
 import Loading from "./components/loading/Loading";
 
 const detailFetchData = async (id = "") => {
+
   try {
     const res = await fetch(`${url}/products/${parseInt(id)}/`);
     if (res.ok) {
@@ -16,6 +17,7 @@ const detailFetchData = async (id = "") => {
 };
 
 const fetchData = async (page = "") => {
+  const user = JSON.parse(localStorage.getItem("user"));
   try {
     const res = await fetch(
       `${url}/cart/${page !== "" ? `?page=${page}` : ""}`,
@@ -37,7 +39,6 @@ const fetchData = async (page = "") => {
 
 const template = async (page = "") => {
   const data = await fetchData();
-  console.log(data);
   // 공통 스타일
   const tdStyle = `px-[10px] py-[20px]`;
   const btnStyle = `w-[48px] h-[48px] indent-[-9999px] border border-[#c4c4c4] bg-no-repeat bg-center`;
@@ -220,9 +221,7 @@ const template = async (page = "") => {
             return `
                 <div class="w-[25%] relative">
                     <strong class="block mb-[12px] ${
-                      idx === tfootData.length - 1
-                        ? "font-bold"
-                        : "font-normal"
+                      idx === tfootData.length - 1 ? "font-bold" : "font-normal"
                     } leading-[20px]">
                         ${el.title}
                     </strong>
@@ -256,6 +255,7 @@ const template = async (page = "") => {
 };
 
 const Cart = async () => {
+  const user = JSON.parse(localStorage.getItem("user"));
   const inner = document.createElement("div");
   let temp = await template();
   // 삭제할 아이디를 담을 변수
@@ -280,6 +280,7 @@ const Cart = async () => {
     next: temp.next ? temp.next : 1,
   };
 
+  // 페이지네이션 핸들러
   const paginationHandler = async (page) => {
     currentPage = page;
     const newData = await template(page);
@@ -287,6 +288,7 @@ const Cart = async () => {
     inner.innerHTML = "";
     inner.insertAdjacentHTML("beforeend", newData.template);
 
+    // 페이지네이션 업데이트
     pagination.prev = newData.prev;
     pagination.next = newData.next;
 
@@ -310,6 +312,7 @@ const Cart = async () => {
         if (!setAmount.has(itemId) && checkbox.checked === true) {
           setAmount.add(itemId);
         } else if (checkbox.checked === false) {
+          // 전체 선택 해제 시 모든 선택 해제
           setAmount.clear();
         }
         el.checked = checkbox.checked;
@@ -323,6 +326,8 @@ const Cart = async () => {
         setAmount.delete(itemId);
       }
     }
+
+    // 선택된 아이템의 총 가격 계산
     const total = Array.from(setAmount).reduce((sum, itemId) => {
       const price = inner.querySelector(`.totalPrice__${itemId}`);
       const parcel = inner.querySelector(`.shipping__${itemId}`);
@@ -337,10 +342,14 @@ const Cart = async () => {
       return sum + itemPrice;
     }, 0);
 
+    // 총 배송비 표시
     parcelPrice.textContent = parcelData.toLocaleString();
+    // 총 가격 표시
     estimatedAmount.textContent = total.toLocaleString();
+    // 총 상품 가격 표시
     productPrice.textContent = productPriceData.toLocaleString();
 
+    // 전체 선택 체크박스 상태 업데이트
     allCheckbox.checked = checkboxs.length === setAmount.size;
   };
 
@@ -378,6 +387,7 @@ const Cart = async () => {
     }
     const products = [];
 
+    // 선택된 상품 정보를 가져옴
     const convertedProducts = [...orderData].map(async (itemId) => {
       const product = inner.querySelector(`.product__name__${itemId}`);
       const productName = product.textContent.trim();
@@ -413,6 +423,7 @@ const Cart = async () => {
         total_price: totalPrice.textContent,
       };
 
+      // 선택 상품 중 is_active=false일 때 true로 바꿈
       if (productIsActive === "false") {
         await fetch(`${url}/cart/${itemId}/`, {
           method: "PUT",
@@ -428,6 +439,7 @@ const Cart = async () => {
         });
       }
 
+      // 배송비 계산
       if (shippingFee.includes("원")) {
         const convertedFee = shippingFee.replace(/[,\s원]/g, "");
         const fee = parseInt(convertedFee);
@@ -436,9 +448,12 @@ const Cart = async () => {
       }
 
       total += parseInt(convertedPrice);
+
+      // 상품 정보 추가
       products.push(data);
     });
 
+    // 모든 상품 데이터 처리 대기
     await Promise.all(convertedProducts);
 
     const order = {
@@ -453,6 +468,8 @@ const Cart = async () => {
       alert("구매하실 상품을 선택해주세요.");
       return;
     }
+
+    // 주문 정보 세션에 저장
     sessionStorage.setItem("order", JSON.stringify(order));
     window.location.hash = "order";
   };
@@ -548,6 +565,8 @@ const Cart = async () => {
       e.target.parentNode.classList.contains("quantity__modal")
     ) {
       const btnStyle = `w-[48px] h-[48px] indent-[-9999px] border border-[#c4c4c4] bg-no-repeat bg-center`;
+
+      // 모달에 수량 수정 영역 추가
       const cont = `
           <div class="quantity__wrap cursor-pointer flex justify-center">
               <button type="button" class="modal__quantity__minus__btn rounded-[5px_0_0_5px] ${btnStyle} bg-[url('/openMarket/images/icon-minus-line.svg')]">빼기</button>

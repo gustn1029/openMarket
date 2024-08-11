@@ -1,8 +1,8 @@
 import Modal from "./components/modal/Modal";
 import { root } from "./main";
 
-const user = JSON.parse(localStorage.getItem("user"));
 const template = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
   let listArr = [];
   const myPageChildren = [
     {
@@ -97,7 +97,7 @@ const template = () => {
         </section>
     `;
 
-  return $header;
+  return {template: $header, user: user};
 };
 
 export const Header = () => {
@@ -105,7 +105,7 @@ export const Header = () => {
   const headerTemp = template();
   let modal = null;
   header.id = "header";
-  header.insertAdjacentHTML("beforeend", headerTemp);
+  header.insertAdjacentHTML("beforeend", headerTemp.template);
 
   const cartBtn = header.querySelector(".cart");
 
@@ -116,8 +116,8 @@ export const Header = () => {
 
   const ModalEventHandler = (e) => {
     e.preventDefault();
+    localStorage.setItem("beforePage", "#cart");
     window.location.hash = "login";
-    localStorage.setItem("beforePage", window.location.hash);
   };
 
   header.addEventListener("click", (e) => {
@@ -126,10 +126,15 @@ export const Header = () => {
       localStorage.setItem("beforePage", window.location.hash);
       window.location.hash = "logout";
     }
+    if(e.target.classList.contains("login")) {
+      e.preventDefault();
+      localStorage.setItem("beforePage", window.location.hash);
+      window.location.hash = "login";
+    }
   });
   cartBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    if (user) {
+    if (headerTemp.user) {
       window.location.hash = "cart";
     } else {
       modal = Modal(

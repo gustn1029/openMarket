@@ -39,9 +39,7 @@ const fetchData = async (id = "") => {
 };
 
 const template = async (id) => {
-  console.log(id);
   const data = await fetchData(id);
-  console.log(data);
 
   const btnStyle = `w-[48px] h-[48px] indent-[-9999px] border border-[#c4c4c4] bg-no-repeat bg-center`;
   const detail = `
@@ -133,7 +131,7 @@ const template = async (id) => {
 
   return {
     detail: detail,
-    data: data
+    data: data,
   };
 };
 
@@ -147,6 +145,7 @@ const Details = async (id) => {
   let isModal = false;
   let modal = null;
 
+  // 요소 선택
   const quantityWrap = inner.querySelector(".quantity__wrap");
   const quantity = inner.querySelector(".product__quantity");
   const totalQuantity = inner.querySelector(".total__quantity");
@@ -157,6 +156,7 @@ const Details = async (id) => {
   const sideInfo = inner.querySelector(".detail__side__infomation");
   let beforeSideInfoTab = inner.querySelector(".side__info__tab button.active");
 
+  // 수량 조절 버튼 클릭 핸들러
   const quantityHandler = (btn) => {
     const btnText = btn.textContent;
     const convertedPrice = totalPrice.textContent.replaceAll(",", "");
@@ -165,7 +165,8 @@ const Details = async (id) => {
         quantity.textContent = ++quantity.textContent;
         totalQuantity.textContent = quantity.textContent;
         totalPrice.textContent = (
-          parseInt(convertedPrice) + temp.data.price).toLocaleString();
+          parseInt(convertedPrice) + temp.data.price
+        ).toLocaleString();
       } else {
         alert(`이 상품은 최대 ${temp.data.stock}까지 구매 가능합니다.`);
       }
@@ -174,15 +175,18 @@ const Details = async (id) => {
         quantity.textContent = --quantity.textContent;
         totalQuantity.textContent = quantity.textContent;
         totalPrice.textContent = (
-          parseInt(convertedPrice) - temp.data.price).toLocaleString();
+          parseInt(convertedPrice) - temp.data.price
+        ).toLocaleString();
       }
     }
   };
 
+  // 구매 버튼 클릭 핸들러
   const buyBtnClickHandler = () => {
-    const shippingMethod = temp.data.shipping_method === "PARCEL" ? "택배배송":"배달";
+    const shippingMethod =
+      temp.data.shipping_method === "PARCEL" ? "택배배송" : "배달";
     let shippingFee = temp.data.shipping_fee;
-    const price = totalPrice.textContent.replace(",","");
+    const price = totalPrice.textContent.replace(",", "");
     let totalOrderPrice = parseInt(price) + shippingFee;
     const orderType = "direct_order";
     const discount = 0;
@@ -194,7 +198,8 @@ const Details = async (id) => {
       quantity: quantity.textContent,
       store_name: temp.data.store_name,
       shipping_method: shippingMethod,
-      shipping_fee: shippingFee === 0 ? "무료배송": `${(shippingFee).toLocaleString()}원`,
+      shipping_fee:
+        shippingFee === 0 ? "무료배송" : `${shippingFee.toLocaleString()}원`,
       total_price: totalOrderPrice,
     };
 
@@ -208,25 +213,28 @@ const Details = async (id) => {
 
     sessionStorage.setItem("order", JSON.stringify(order));
     window.location.hash = "order";
-  }
+  };
 
+  // 모달 닫기 핸들러
   const ModalCloseHandler = () => {
     modal !== null && modal.remove();
     isModal = false;
   };
 
+  // 모달 이벤트 핸들러
   const ModalEventHandler = () => {
     if (user) {
       window.location.hash = "cart";
     } else {
+      localStorage.setItem("beforePage", window.location.hash);
       window.location.hash = "login";
     }
   };
 
+  // 장바구니 버튼 클릭 핸들러
   const cartBtnClickHandler = () => {
-    
     if (!user) {
-      if(!isModal) {
+      if (!isModal) {
         modal = Modal(
           `로그인이 필요한 서비스입니다.<br>로그인 하시겠습니까?`,
           ModalEventHandler,
@@ -235,7 +243,6 @@ const Details = async (id) => {
         root.appendChild(modal);
         isModal = true;
       }
-      localStorage.setItem("beforePage", window.location.hash);
       return;
     }
 
@@ -256,7 +263,7 @@ const Details = async (id) => {
     res
       .then((res) => {
         if (res.ok) {
-          if(!isModal) {
+          if (!isModal) {
             modal = Modal(
               `해당 상품이 장바구니에 담겼습니다.<br>장바구니로 이동하시겠습니까?`,
               ModalEventHandler,
@@ -270,6 +277,7 @@ const Details = async (id) => {
       .catch((error) => console.error(error));
   };
 
+  // 사이드 정보 탭 핸들러
   const sideInfoTabHandler = (activeTab, unactiveTab) => {
     let activeTabValue = activeTab.getAttribute("data-tab");
 
@@ -288,6 +296,7 @@ const Details = async (id) => {
     beforeSideInfoTab = activeTab;
   };
 
+  // 이벤트 핸들러
   quantityWrap.addEventListener("click", (e) => {
     if (e.target.nodeName === "BUTTON") {
       quantityHandler(e.target);

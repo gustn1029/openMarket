@@ -335,6 +335,7 @@ const Order = async () => {
   inner.classList.add("inner");
   inner.insertAdjacentHTML("beforeend", temp.template);
 
+  // 폼 입력 요소 선택
   const buyerName = inner.querySelector("#buyerName");
   const buyerPhoneFirst = inner.querySelector("#buyerPhone__first");
   const buyerPhoneMiddle = inner.querySelector("#buyerPhone__middle");
@@ -361,7 +362,7 @@ const Order = async () => {
   recieverPhoneMiddle.setAttribute("maxlength", "4");
   recieverPhoneLast.setAttribute("maxlength", "4");
 
-  // 유효성 검사가 필요한 input data
+  // 유효성 검사가 필요한 input 데이터 정의
   const inputControlData = [
     {
       name: "buyerName",
@@ -484,7 +485,7 @@ const Order = async () => {
     return errorMessage;
   };
 
-  // 값이 변경될 때 실행되는 함수
+  // 입력 값이 변경될 때 호출되는 함수
   const inputValueChangeHandler = (input, obj, idx) => {
     const error = inner.querySelector(`.errorMessage__regex__${obj.name}`);
     const empty = inner.querySelector(`.errorMessage__empty__${idx}`);
@@ -492,9 +493,6 @@ const Order = async () => {
 
     let errorMessage = null;
     if (!obj.regex.test(input.value)) {
-      console.log(
-        `${input.parentNode.textContent.trim()} ${obj.regexErrorMessage}`
-      );
       errorMessageViewFunc(
         input,
         obj.regexErrorMessage,
@@ -518,7 +516,7 @@ const Order = async () => {
     }
   };
 
-  // 인풋 입력 값이 비어있는지 체크
+  // 입력 값이 비어있는지 체크하는 함수
   const valueEmptyCheckHandler = () => {
     // 에러 메시지가 출력되어 있는지 확인
     if (errorMessages.length > 0) {
@@ -553,6 +551,7 @@ const Order = async () => {
     });
   };
 
+  // 결제 방법 선택 핸들러
   const paymentSelectHandler = (e) => {
     const target = e.target;
     if (target.nodeName === "INPUT") {
@@ -561,6 +560,7 @@ const Order = async () => {
     }
   };
 
+  // 우편번호 버튼 클릭 핸들러
   const recieverZipCodeBtnClickHandler = (e) => {
     e.preventDefault();
     modal = Modal(
@@ -573,6 +573,7 @@ const Order = async () => {
     }
   };
 
+  // 주문 제출 핸들러
   const orderSubmitHandler = () => {
     const loading = Loading();
     const orderType = temp.orderType;
@@ -604,6 +605,7 @@ const Order = async () => {
       data.quantity = quantity;
     }
 
+    // 서버에 주문 데이터 전송
     const res = fetch(`${url}/order/`, {
       method: "post",
       headers: {
@@ -617,7 +619,6 @@ const Order = async () => {
       .then(async (res) => {
         if (res.ok) {
           const json = await res.json();
-          console.log(json);
           alert("주문을 완료했습니다.");
           window.location.hash = "";
         }
@@ -628,6 +629,7 @@ const Order = async () => {
       });
   };
 
+  // 주문 버튼 클릭 핸들러
   const orderBtnClickHandler = (e) => {
     e.preventDefault();
 
@@ -652,6 +654,7 @@ const Order = async () => {
       return;
     }
 
+    // 주문 제출
     orderSubmitHandler();
   };
 
@@ -661,6 +664,7 @@ const Order = async () => {
     isModal = false;
   };
 
+  // 이벤트 핸들러
   inputControlData.forEach((el, i) => {
     el.tag.addEventListener("change", (e) => {
       inputValueChangeHandler(e.target, el, i);
@@ -678,8 +682,6 @@ const Order = async () => {
       orderBtn.classList.remove("on");
       isOrderCheck = false;
     }
-
-    console.log(isOrderCheck);
   });
 
   payment.addEventListener("click", paymentSelectHandler);

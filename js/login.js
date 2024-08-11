@@ -53,14 +53,17 @@ export const Login = () => {
   const userPassword = document.getElementById("userPassword");
   let errorMessage = null;
 
+  // 사용자 유형 버튼 클릭 핸들러
   const userBtnClickHandler = (clickUserInfo, unclickUserInfo) => {
-    const unclickUserInfoType = unclickUserInfo.getAttribute("data-type").toLowerCase();
+    const unclickUserInfoType = unclickUserInfo
+      .getAttribute("data-type")
+      .toLowerCase();
     const clickUserInfoType = clickUserInfo.getAttribute("data-type");
     unclickUserInfo.classList.remove("active");
     !clickUserInfo.classList.contains("active") &&
       clickUserInfo.classList.add("active");
-      section.classList.remove(unclickUserInfoType);
-      section.classList.add(clickUserInfoType.toLowerCase());
+    section.classList.remove(unclickUserInfoType);
+    section.classList.add(clickUserInfoType.toLowerCase());
     loginUser = clickUserInfoType;
     userId.value = "";
     userPassword.value = "";
@@ -68,7 +71,8 @@ export const Login = () => {
     errorMessage = null;
   };
 
-  const submitHandler = () => {
+  // 로그인 폼 제출 핸들러
+  const submitHandler = async () => {
     errorMessage !== null && errorMessage.remove();
 
     const idVal = userId.value;
@@ -77,42 +81,44 @@ export const Login = () => {
     const loginData = {
       username: idVal,
       password: passwordVal,
-      login_type: loginUser
+      login_type: loginUser,
     };
+    try {
+      const res = await fetch(`${url}/accounts/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
 
-    const res = fetch(`${url}/accounts/login/`, {
-      method:"POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(loginData)
-    });
-    
-    res.then((res) => {
-      if(res.ok) {
-        const json = res.json();
-        return json;
+      if (res.ok) {
+        const json = await res.json();
+        const user = {
+          user_type: json.user_type,
+          token: json.token,
+          cart: [],
+        };
+
+        localStorage.setItem("user", JSON.stringify(user));
+
+        const beforeHash = localStorage.getItem("beforePage");
+        window.location.href = `/openMarket/${beforeHash ? beforeHash : ""}`;
+
+        localStorage.removeItem("beforePage");
       } else {
-        userPassword.insertAdjacentHTML("afterend",ErrorMessage("아이디 또는 비밀번호가 일치하지 않습니다."));
-  
+        userPassword.insertAdjacentHTML(
+          "afterend",
+          ErrorMessage("아이디 또는 비밀번호가 일치하지 않습니다.")
+        );
         errorMessage = document.querySelector(".error__message");
-      };
-    }).then((json) => {
-      const user = {
-        user_type: json.user_type,
-        token: json.token,
-        cart:[]
       }
-      
-      localStorage.setItem("user", JSON.stringify(user));
-    }).then(()=> {
-      const beforeHash = localStorage.getItem("beforePage");
-      window.location.href = `/openMarket/${beforeHash ? beforeHash: ""}`;
-      window.location.reload();
-      localStorage.removeItem("beforePage");
-    })
-  }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
+  // 이벤트 리스너
   customerBtn.addEventListener("click", (e) => {
     e.preventDefault();
     userBtnClickHandler(customerBtn, sellerBtn);
@@ -126,5 +132,5 @@ export const Login = () => {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     submitHandler();
-  })
+  });
 };

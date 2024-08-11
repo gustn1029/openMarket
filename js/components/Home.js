@@ -8,6 +8,12 @@ import { root } from "../main.js";
 import Order from "../order.js";
 import Footer from "../footer.js";
 
+/**
+ * 
+ * @param content 현재 화면이 어떤 화면인지 체크 
+ * @param id 디테일 화면일 때 출력할 상품의 아이디
+ * @returns 
+ */
 const Home = async (content = "", id = "") => {
   const $main = document.createElement("main");
   const loading = Loading();

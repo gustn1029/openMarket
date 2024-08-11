@@ -83,6 +83,7 @@ export const Join = () => {
   const root = document.getElementById("app");
   root.innerHTML = template();
 
+  // 사용자 정보와 상태를 저장하는 변수들
   const user = JSON.parse(localStorage.getItem("user"));
   let joinUser = "BUYER";
   const customerBtn = document.querySelector("button.customer");
@@ -100,6 +101,7 @@ export const Join = () => {
   const joinCheckbox = document.getElementById("join__checkbox");
   const joinBtn = document.querySelector(".join__btn");
   const section = document.querySelector(".user__section");
+
   // 에러가 발생했을 때 에러 메시지를 관리하는 변수
   let errorMessage = null;
   // 판매회원 회원가입 탭을 눌렀을 때 관리되는 변수
@@ -111,6 +113,7 @@ export const Join = () => {
   let checkId,
     checkBusinessNumber = "";
 
+  // 사용자 버튼 클릭 핸들러: 고객/판매자 선택 시 UI 변경
   const userBtnClickHandler = (clickUserInfo, unclickUserInfo, infoText) => {
     unclickUserInfo.classList.remove("active");
     !clickUserInfo.classList.contains("active") &&
@@ -124,6 +127,7 @@ export const Join = () => {
     errorMessage = null;
   };
 
+  // 판매자 탭 버튼 클릭 핸들러: 판매자 폼 추가
   const sellerTabBtnClickHandler = (
     clickUserInfo,
     unclickUserInfo,
@@ -150,6 +154,7 @@ export const Join = () => {
     sellerJoinForm = document.querySelector(".user__seller__form__add__wrap");
   };
 
+  // 사용자 ID 중복 확인 버튼 클릭 핸들러
   const userIdCheckBtnClickHandler = () => {
     let message = {};
     errorMessage !== null && errorMessage.remove();
@@ -219,10 +224,10 @@ export const Join = () => {
       });
   };
 
+  // 비밀번호 변경 핸들러: 비밀번호 유효성 검사
   const passwordChangeHandler = () => {
     const password = userPassword.value;
     const regex = /^(?=.*[a-z])(?=.*\d)(?=.*[\W_]?)[a-zA-Z\d\W_]{8,}$/;
-    console.log(!regex.test(password));
 
     errorMessage !== null && errorMessage.remove();
 
@@ -267,6 +272,7 @@ export const Join = () => {
     }
   };
 
+  // 비밀번호 확인 핸들러: 비밀번호 일치 여부 확인
   const passwordCheckHandler = () => {
     const password = userPassword.value;
     const passwordCheck = userPasswordCheck.value;
@@ -291,6 +297,7 @@ export const Join = () => {
     }
   };
 
+  // 전화 코드 선택 핸들러
   const phoneCodeChangeHandler = (node) => {
     const value = node.getAttribute("data-value");
     if (value) {
@@ -299,6 +306,7 @@ export const Join = () => {
     }
   };
 
+  // 사업자 등록번호 인증 핸들러
   const businessNumberCheckHandler = () => {
     errorMessage !== null && errorMessage.remove();
     let message = {};
@@ -369,6 +377,7 @@ export const Join = () => {
       });
   };
 
+  // 회원가입 제출 핸들러
   const submitHandler = async (userType) => {
     let data = {};
 
@@ -381,6 +390,7 @@ export const Join = () => {
 
     errorMessage !== null && errorMessage.remove();
 
+    // 아이디 중복 확인 체크
     if (!userIdCheck) {
       userIdCheckBtn.parentNode.insertAdjacentHTML(
         "afterend",
@@ -406,6 +416,7 @@ export const Join = () => {
       return;
     }
 
+    // 전화번호 유효성 검사
     if (!phoneNumberPattern.test(parseInt(phoneNumber))) {
       phoneNumberLast.parentNode.insertAdjacentHTML(
         "afterend",
@@ -417,6 +428,7 @@ export const Join = () => {
       return;
     }
 
+    // 약관 동의 여부 체크
     if (!joinCheckbox.checked) {
       joinCheckbox.parentNode.insertAdjacentHTML(
         "afterend",
@@ -426,6 +438,7 @@ export const Join = () => {
       return;
     }
 
+    // 사용자 유형에 따라 데이터 구성
     if (userType === "BUYER") {
       data = {
         username: username,
@@ -438,6 +451,7 @@ export const Join = () => {
       const businessNumber = section.querySelector("#userBusinessNumber").value;
       const storeName = section.querySelector("#userStoreName").value;
 
+      // 사업자 등록번호 인증 체크
       if (!userBusinessNumberCheck) {
         userBusinessNumber.parentNode.parentNode.insertAdjacentHTML(
           "afterend",
@@ -471,7 +485,6 @@ export const Join = () => {
       };
     }
 
-    console.log(data);
 
     const res = await fetch(
       `${url}${/accounts/}/${
