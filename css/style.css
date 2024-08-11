@@ -160,7 +160,7 @@ input::-webkit-inner-spin-button {
   position: relative;
 }
 
-#footer .terms__list li::before {
+#footer .terms__list li:nth-child(n+2):before {
   content: "";
   position: absolute;
   width: 1px; height: 80%;
