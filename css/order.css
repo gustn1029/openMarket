@@ -149,8 +149,8 @@
   width: 0;
   height: 0;
 }
-.payment label p::before,
-.payment label p::after {
+.payment label span::before,
+.payment label span::after {
   content: "";
   position: absolute;
   border-radius: 100%;
@@ -158,7 +158,7 @@
   transform: translateY(-50%);
 }
 
-.payment label p::before {
+.payment label span::before {
   width: 18px;
   height: 18px;
   border: 2px solid #c4c4c4;
@@ -166,13 +166,13 @@
 }
 
 /* 결제 수단 영역 */
-.payment label p::after {
+.payment label span::after {
   left: 3px;
   width: 12px;
   height: 12px;
 }
 
-.payment label input[type="radio"]:checked + p::after {
+.payment label input[type="radio"]:checked + span::after {
   background-color: #767676;
 }
 
@@ -237,13 +237,13 @@
   display: block;
   margin-bottom: 30px;
 }
-.finally__order__wrap label p {
+.finally__order__wrap label span {
   padding-left: 26px;
   position: relative;
   font-size: 1rem;
   cursor: pointer;
 }
-.finally__order__wrap label p::before {
+.finally__order__wrap label span::before {
   content: "";
   position: absolute;
   left: 0;
@@ -261,11 +261,11 @@
   height: 0;
 }
 
-.finally__order__wrap label input[type="checkbox"]:checked + p {
+.finally__order__wrap label input[type="checkbox"]:checked + span {
   color: #222;
 }
 
-.finally__order__wrap label input[type="checkbox"]:checked + p::before {
+.finally__order__wrap label input[type="checkbox"]:checked + span::before {
   background: url("/openMarket/images/check-fill-box.svg");
 }
 

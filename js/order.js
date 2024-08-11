@@ -253,7 +253,7 @@ const template = () => {
                                             value="${el.value}"
                                             id="${el.value}" 
                                         />
-                                        <p>${el.text}</p>
+                                        <span>${el.text}</span>
                                     </label>
                                 `;
                               })
@@ -297,7 +297,7 @@ const template = () => {
                             <div class="finally__order__wrap">
                               <label for="order__check">
                                 <input type="checkbox" id="order__check" />
-                                <p class="order__checkbox__text">주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.</p>
+                                <span class="order__checkbox__text">주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.</span>
                               </label>
                               <button type="submit" class="order__submit__btn">결제하기</button>
                             </div>
