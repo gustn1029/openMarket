@@ -53,11 +53,13 @@ const template = () => {
                 <a href="/openMarket/">
                     <h1 class="w-[124px] h-[38px] indent-[-9999px] bg-[url('/images/Logo-hodu.png')] bg-no-repeat bg-cover">호두 오픈마켓</h1>
                 </a>
-                <label for="search-input" class="max-w-[400px] w-full flex items-center px-[22px] py-[9px] rounded-[50px] border-[2px] border-[#21BF48]">
-                <span class="tag__hidden">검색어 입력</span>
-                    <input type="text" placeholder="상품을 검색해보세요!" class="leading-[20px] flex-1 outline-none" id="search-input" />
-                    <button type="button" class="w-[28px] h-[28px] bg-[url('/images/icon-search.svg')] bg-no-repeat bg-cover indent-[-9999px]">검색</button>
-                </label>
+                <div class="max-w-[400px] w-full flex gap-[5px] rounded-[50px] border-[2px] border-[#21BF48] items-center px-[22px] py-[9px]">
+                  <label for="search-input" class="grow">
+                  <span class="tag__hidden">검색어 입력</span>
+                      <input type="text" placeholder="상품을 검색해보세요!" class="leading-[20px] flex-1 outline-none" id="search-input" />
+                  </label>
+                  <button type="button" class="w-[28px] h-[28px] bg-[url('/images/icon-search.svg')] bg-no-repeat bg-cover indent-[-9999px]">검색</button>
+                </div>
             </div>
             <nav>
             <ul class="flex items-center nav__list">
@@ -141,7 +143,9 @@ export const Header = () => {
 
   const myPage = header.querySelectorAll(".myPage");
   if (myPage.length > 0) {
-    myPage.forEach((el)=> el.addEventListener("click", (e) => e.preventDefault()));
+    myPage.forEach((el) =>
+      el.addEventListener("click", (e) => e.preventDefault())
+    );
   }
 
   return header;
