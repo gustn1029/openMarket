@@ -103,6 +103,7 @@ input::-webkit-inner-spin-button {
   left: 0;
   top: 0;
   z-index: 1000;
+  background-color: white;
 }
 
 .nav__list > .nav__list__item:has(.myPage):hover::after {
