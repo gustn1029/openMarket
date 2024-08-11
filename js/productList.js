@@ -30,10 +30,10 @@ const template = async (page = "") => {
                                       }" class="absolute w-full h-full left-[0] top-[0]" />
                                   </div>
                                   <p class="text-[#767676] leading-[1]">
-                                    ${el.store_name}
+                                    ${el.store_name.replace(/\x08/g, '')}
                                   </p>
                                   <h3 class="text-[1.125rem] leading-[1.375rem]">
-                                      ${el.product_name}
+                                      ${el.product_name.replace(/\x08/g, '')}
                                   </h3>
                                   <strong class="text-[1.5rem] leading-[1]">${el.price.toLocaleString()}<span class="ml-[2px] font-normal text-[1rem]">원</span></strong>
                                 </a>
