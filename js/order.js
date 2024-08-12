@@ -38,7 +38,6 @@ const template = () => {
   ];
   // 공통 스타일
   const tdStyle = `px-[10px] pt-[8px] pb-[17px] text-center`;
-  const btnStyle = `w-[48px] h-[48px] indent-[-9999px] border border-[#c4c4c4] bg-no-repeat bg-center`;
   // 공통 스타일
   const list = orderProducts.map((el) => {
     return `<tr class="relative flex items-center border-b border-b-[#c4c4c4]">
@@ -618,7 +617,6 @@ const Order = async () => {
     res
       .then(async (res) => {
         if (res.ok) {
-          const json = await res.json();
           alert("주문을 완료했습니다.");
           window.location.hash = "";
         }
