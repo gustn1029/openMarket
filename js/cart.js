@@ -38,7 +38,7 @@ const fetchData = async (page = "") => {
 };
 
 const template = async (page = "") => {
-  const data = await fetchData();
+  const data = await fetchData(page);
   // 공통 스타일
   const tdStyle = `px-[10px] py-[20px]`;
   const btnStyle = `w-[48px] h-[48px] indent-[-9999px] border border-[#c4c4c4] bg-no-repeat bg-center`;
