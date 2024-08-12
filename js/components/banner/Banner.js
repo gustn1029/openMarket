@@ -51,7 +51,7 @@ const Banner = (data, isLink = true, sliderClass = "") => {
       slide.classList.toggle("opacity-100", i === showIndex);
       slide.classList.toggle("z-[1]", i === showIndex);
       slide.classList.toggle("opacity-0", i !== showIndex);
-      slide.classList.toggle("", i !== showIndex);
+      slide.classList.toggle("z-[0]", i !== showIndex);
     });
   };
 
