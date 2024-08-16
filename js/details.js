@@ -40,8 +40,9 @@ const fetchData = async (id = "") => {
 
 const template = async (id) => {
   const data = await fetchData(id);
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  const btnStyle = `w-[48px] h-[48px] indent-[-9999px] border border-[#c4c4c4] bg-no-repeat bg-center`;
+  const btnStyle = ` ${user && user.user_type === "SELLER" ? "seller cursor-auto":""} w-[48px] h-[48px] indent-[-9999px] border border-[#c4c4c4] bg-no-repeat bg-center`;
   const detail = `
         <section class="">
             <h2 class="tag__hidden">상품 디테일</h2>
@@ -95,8 +96,8 @@ const template = async (id) => {
                         </div>
                     </div>
                     <div class="flex gap-[14px]">
-                        <button type="button" class="buy__btn flex-[2_3_0%] py-[20px] text-white leading-[20px] bg-[#21BF48] rounded-[5px]">바로 구매</button>
-                        <button type="button" class="cart__btn flex-[1_3_0%] py-[20px] text-white leading-[20px] bg-[#767676] rounded-[5px]">장바구니</button>
+                        <button type="button" class="${user && user.user_type === "SELLER" ? "sellor bg-[#c4c4c4] cursor-auto":"bg-[#21BF48]"} buy__btn flex-[2_3_0%] py-[20px] text-white leading-[20px] rounded-[5px]">바로 구매</button>
+                        <button type="button" class="${user && user.user_type === "SELLER" ? "sellor bg-[#c4c4c4] cursor-auto":" bg-[#767676]"} cart__btn flex-[1_3_0%] py-[20px] text-white leading-[20px] rounded-[5px]">장바구니</button>
                     </div>
                 </div>
             </div>
@@ -160,6 +161,11 @@ const Details = async (id) => {
   const quantityHandler = (btn) => {
     const btnText = btn.textContent;
     const convertedPrice = totalPrice.textContent.replaceAll(",", "");
+    const seller = btn.classList.contains("seller");
+    if(seller) {
+      return;
+    }
+
     if (btnText === "더하기") {
       if (temp.data.stock > parseInt(quantity.textContent)) {
         quantity.textContent = ++quantity.textContent;
@@ -183,6 +189,10 @@ const Details = async (id) => {
 
   // 구매 버튼 클릭 핸들러
   const buyBtnClickHandler = () => {
+    if(user.user_type === "SELLER") {
+      return;
+    }
+
     const shippingMethod =
       temp.data.shipping_method === "PARCEL" ? "택배배송" : "배달";
     let shippingFee = temp.data.shipping_fee;
@@ -243,6 +253,10 @@ const Details = async (id) => {
         root.appendChild(modal);
         isModal = true;
       }
+      return;
+    }
+
+    if(user.user_type === "SELLER") {
       return;
     }
 
