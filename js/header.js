@@ -1,8 +1,22 @@
 import Modal from "./components/modal/Modal";
 import { root } from "./main";
 
-const template = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+// 판매자 센터일 때 표시되는 헤더
+const sellerTemplate = () => {
+  const sellerTemp = `
+    <section class="flex items-center gap-[16px] w-full bg-white px-[100px] py-[25px]">
+        <a href="/openMarket/">
+            <h1 class="w-[80px] h-[24px] indent-[-9999px] bg-[url('/images/Logo-hodu.png')] bg-no-repeat bg-cover">호두 오픈마켓</h1>
+        </a>
+        <strong class="text-[1.875rem] leading-[40px]">판매자 센터</strong>
+      </section>
+  `;
+
+  return sellerTemp;
+};
+
+// 판매자 센터가 아닐 때 보여지는 헤더
+const defaultTemplate = (user) => {
   let listArr = [];
   const myPageChildren = [
     {
@@ -47,7 +61,8 @@ const template = () => {
   } else {
     listArr = buyerListItem;
   }
-  const $header = `
+
+  const defaultTemp = `
         <section class="inner flex w-full bg-white py-[20px]">
             <div class="flex items-center grow gap-[30px]">
                 <a href="/openMarket/">
@@ -67,10 +82,10 @@ const template = () => {
                   .map((el) => {
                     let itemPublish = "";
                     if (el.text === "판매자 센터") {
-                      itemPublish = `<a href="${el.href}" class="seller block text-left py-[18px] pl-[60px] ml-[30px] w-[168px] leading-[1.125rem] text-[1.125rem] text-white rounded-[5px] bg-[#21BF48] bg-no-repeat bg-top">${el.text}</a>`;
+                      itemPublish = `<a href="${el.href}" class="seller block bg-no-repeat bg-top text-left py-[18px] pl-[60px] ml-[30px] w-[168px] leading-[1.125rem] text-[1.125rem] text-white rounded-[5px] bg-[#21BF48] bg-no-repeat">${el.text}</a>`;
                     } else {
                       // bg 이미지는 hover 처리를 위해 style.css로 처리
-                      itemPublish = `<a href="${el.href}" class="nav__list__item ${el.class} block w-[64px] text-center leading-[0.875rem] text-[0.75rem] text-[#767676] pt-[36px] hover:text-[#21BF48]">${el.text}</a>`;
+                      itemPublish = `<a href="${el.href}" class="bg-no-repeat bg-top ${el.class} block w-[64px] text-center leading-[0.875rem] text-[0.75rem] text-[#767676] pt-[36px] hover:text-[#21BF48]">${el.text}</a>`;
                     }
 
                     if (el.children && el.children.length > 0) {
@@ -87,7 +102,7 @@ const template = () => {
                       `;
                     }
                     return `
-                              <li class="relative nav__list__item bg-no-repeat bg-top group/item">
+                              <li class="relative nav__list__item group/item">
                                 ${itemPublish}
                               </li>`;
                   })
@@ -97,9 +112,23 @@ const template = () => {
         </section>
     `;
 
-  return {template: $header, user: user};
+    return defaultTemp;
+}
+
+// 헤더 템플릿
+const template = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const hash = window.location.hash.slice(1);
+  const $header =
+    hash.includes("seller-center")
+      ? sellerTemplate()
+      : defaultTemplate(user);
+
+  return { template: $header, user: user };
 };
 
+// 헤더 기능 설정 및 헤더 반환 함수
 export const Header = () => {
   const header = document.createElement("header");
   const headerTemp = template();
@@ -126,25 +155,26 @@ export const Header = () => {
       localStorage.setItem("beforePage", window.location.hash);
       window.location.hash = "logout";
     }
-    if(e.target.classList.contains("login")) {
+    if (e.target.classList.contains("login")) {
       e.preventDefault();
       localStorage.setItem("beforePage", window.location.hash);
       window.location.hash = "login";
     }
   });
-  cartBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    if (headerTemp.user) {
-      window.location.hash = "cart";
-    } else {
-      modal = Modal(
-        `로그인이 필요한 서비스입니다.<br>로그인 하시겠습니까?`,
-        ModalEventHandler,
-        ModalCloseHandler
-      );
-      root.appendChild(modal);
-    }
-  });
+  cartBtn &&
+    cartBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (headerTemp.user) {
+        window.location.hash = "cart";
+      } else {
+        modal = Modal(
+          `로그인이 필요한 서비스입니다.<br>로그인 하시겠습니까?`,
+          ModalEventHandler,
+          ModalCloseHandler
+        );
+        root.appendChild(modal);
+      }
+    });
 
   const myPage = header.querySelectorAll(".myPage");
   if (myPage.length > 0) {

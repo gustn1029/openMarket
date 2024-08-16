@@ -128,25 +128,27 @@ input::-webkit-inner-spin-button {
   z-index: 0;
 }
 
-.nav__list__item.seller {
+.nav__list__item > .seller {
+  background-size: 24px 26px;
+  background-position: 24px center;
   background-image: url("/openMarket/images/icon-shopping-bag.svg");
 }
 
-.nav__list__item:has(.myPage),
-.nav__list__item:has(.login) {
+.nav__list__item > .myPage,
+.nav__list__item > .login {
   background-image: url("/openMarket/images/icon-user.svg");
 }
 
-.nav__list__item:has(.cart) {
+.nav__list__item > .cart {
   background-image: url("/openMarket/images/icon-shopping-cart.svg");
 }
 
-.nav__list__item:has(.login):hover,
-.nav__list__item:has(.myPage):hover {
+.nav__list__item > .login:hover,
+.nav__list__item > .myPage:hover {
   background-image: url("/openMarket/images/icon-user-2.svg");
 }
 
-.nav__list__item:has(.cart):hover {
+.nav__list__item > .cart:hover {
   background-image: url("/openMarket/images/icon-shopping-cart-2.svg");
 }
 
