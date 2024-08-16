@@ -34,6 +34,12 @@ const router = async () => {
     await Home("cart");
   } else if (hash === "order") {
     await Home("order");
+  } else if (hash.includes("seller-center")) {
+    if(hash.includes("product-listing")) {
+      await Home();
+    } else {
+      await Home("seller-center");
+    }
   } else {
     window.location.href = "/openMarket/";
   }

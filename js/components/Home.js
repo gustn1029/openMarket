@@ -8,6 +8,8 @@ import { root } from "../main.js";
 import Order from "../order.js";
 import Footer from "../footer.js";
 import Banner from "./banner/Banner.js";
+import SellerTemplate from "./seller/SellerTemplate.js";
+import SellerProductList from "./seller/SellerProductList.js";
 
 /**
  * 
@@ -47,6 +49,9 @@ const Home = async (content = "", id = "") => {
     $main.appendChild(await Cart()); // 장바구니 페이지 로드
   } else if (content === "order") {
     $main.appendChild(await Order()); // 장바구니 페이지 로드
+  } else if (content === "seller-center") {
+    const productList = SellerProductList();
+    $main.appendChild(SellerTemplate(productList));
   }
 
   if(content !== "") {
