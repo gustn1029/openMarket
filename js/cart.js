@@ -4,7 +4,6 @@ import Modal from "./components/modal/Modal";
 import Loading from "./components/loading/Loading";
 
 const detailFetchData = async (id = "") => {
-
   try {
     const res = await fetch(`${url}/products/${parseInt(id)}/`);
     if (res.ok) {
@@ -396,9 +395,12 @@ const Cart = async () => {
       const productImage = inner
         .querySelector(`.product__img__${itemId}`)
         .getAttribute("src");
-      const productQuantity = inner
-        .querySelector(`.product__quantity__${itemId}`)
-        .textContent.trim();
+      const productQuantityData = inner.querySelector(
+        `.product__quantity__${itemId}`
+      );
+      const productQuantity = productQuantityData.textContent.trim();
+      const stock = productQuantity.getAttribute("data-stock");
+
       const storeName = inner
         .querySelector(`.store__name__${itemId}`)
         .textContent.trim();
@@ -411,6 +413,14 @@ const Cart = async () => {
         : shipping[1];
       const totalPrice = inner.querySelector(`.totalPrice__${itemId}`);
       const convertedPrice = totalPrice.textContent.replace(/[,\s원]/g, "");
+
+      if (parseInt(productQuantity) > stock) {
+        alert(
+          `${productName} 상품의 수량이 재고 보다 많습니다.\n수정 후 다시 주문해주세요.`
+        );
+        productQuantityData.textContent = stock;
+        return;
+      }
 
       const data = {
         product_id: productId,
@@ -488,7 +498,7 @@ const Cart = async () => {
     const data = {
       product_id: parseInt(productId),
       quantity: cartQuantity,
-      is_active: false,
+      is_active: true,
     };
     const res = fetch(`${url}/cart/${cartId}/`, {
       method: "PUT",
