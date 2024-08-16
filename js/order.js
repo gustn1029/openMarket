@@ -107,7 +107,7 @@ const template = () => {
                   </tr>
               </tfoot>
           </table>
-          <form class="w-full text-[1.125rem]">
+          <form name="order__form" class="w-full text-[1.125rem]">
             <section class="mb-[62px]">
                 <h3 class="mb-[40px] text-[1.5rem] font-[600] leading-[30px] pb-[18px] border-b-2 border-b-[#c4c4c4]">배송정보</h3>
                     <section class="form__wrap mb-[40px]">
@@ -368,7 +368,7 @@ const Order = async () => {
       tag: buyerName,
       emptyErrorMessage: "영역이 비어있습니다.",
       regex: /^[a-zA-Z\uac00-\ud7af]{2,}$/,
-      regexErrorMessage: "입력에는 최소 3자 이상, 문자만 입력이 가능합니다.",
+      regexErrorMessage: "입력에는 최소 2자 이상, 문자만 입력이 가능합니다.",
     },
     {
       name: "buyerPhone__last",
@@ -403,7 +403,7 @@ const Order = async () => {
       tag: recieverName,
       emptyErrorMessage: "영역이 비어있습니다.",
       regex: /^[a-zA-Z\uac00-\ud7af]{2,}$/,
-      regexErrorMessage: "입력에는 최소 3자 이상, 문자만 입력이 가능합니다.",
+      regexErrorMessage: "입력에는 최소 2자 이상, 문자만 입력이 가능합니다.",
     },
     {
       name: "recieverPhone__last",
@@ -631,6 +631,11 @@ const Order = async () => {
   const orderBtnClickHandler = (e) => {
     e.preventDefault();
 
+    // 동의 체크 안하면 리턴
+    if (!orderBtn.classList.contains("on")) {
+      alert("주문 내용 확인 및 정보 제공 등에 동의해주세요.");
+      return;
+    }
     valueEmptyCheckHandler();
     // 비어있는 값이 있으면 리턴
     if (!isValueEmpty) {
@@ -646,11 +651,6 @@ const Order = async () => {
       return;
     }
 
-    // 동의 체크 안하면 리턴
-    if (!orderBtn.classList.contains("on")) {
-      alert("주문 내용 확인 및 정보 제공 등에 동의해주세요.");
-      return;
-    }
 
     // 주문 제출
     orderSubmitHandler();

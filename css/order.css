@@ -280,9 +280,11 @@
   font-weight: bold;
   border-radius: 5px;
   transition: all 0.3s;
+  cursor: auto;
 }
 .order__submit__btn.on {
   background-color: #21bf48;
+  cursor: pointer;
 }
 
 #order .error__message {
