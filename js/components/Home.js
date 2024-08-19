@@ -51,10 +51,10 @@ const Home = async (content = "", id = "") => {
     $main.appendChild(await Order()); // 장바구니 페이지 로드
   } else if (content === "seller-center") {
     const productList = SellerProductList();
-    $main.appendChild(SellerTemplate(productList));
+    $main.appendChild(SellerTemplate(productList, "백엔드글로벌"));
   }
 
-  if(content !== "") {
+  if(content !== "" && !content.includes("seller-center")) {
     $main.classList.add("m-[80px_0_180px]");
     banner && banner.remove();
   } else {
