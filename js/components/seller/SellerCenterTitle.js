@@ -1,3 +1,5 @@
+import "./sellerCenterTitle.css"
+
 const SellerCenterTitle = (title = "", hash = "") => {
   let template = "";
   if (hash === "make-product") {
@@ -9,7 +11,7 @@ const SellerCenterTitle = (title = "", hash = "") => {
                     <h2 class="sans-bold">대시보드</h2>
                     <strong class="font-[400] ml-[16px] text-[#21BF48]">${title}</strong>
                 </div>
-                <button class="block leading-[24px] text-[1.125rem] rounded-[5px] py-[15px] pl-[60px] pr-[20px] text-white bg-[#21BF48]">상품 업로드</button>
+                <button class="upload__btn flex items-center gap-[8px] block leading-[24px] text-[1.125rem] rounded-[5px] py-[15px] px-[20px] text-white bg-[#21BF48]">상품 업로드</button>
             </div>
         `;
   }
