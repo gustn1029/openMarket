@@ -51,7 +51,7 @@ const Home = async (content = "", id = "") => {
     $main.appendChild(await Order()); // 장바구니 페이지 로드
   } else if (content === "seller-center") {
     const productList = SellerProductList();
-    $main.appendChild(SellerTemplate(productList, "백엔드글로벌"));
+    $main.appendChild(SellerTemplate(await productList, "백엔드글로벌"));
   }
 
   if(content !== "" && !content.includes("seller-center")) {
