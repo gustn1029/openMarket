@@ -29,6 +29,8 @@
 
 ### 2.2 배포 URL
 - https://gustn1029.github.io/openMarket/
+- test id: test2
+- test password: test123@
 
 ### 2.3 URL 구조
 |URL|페이지 설명|GET|POST|PUT|DELETE|로그인 권한|
