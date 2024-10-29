@@ -48,7 +48,7 @@ const template = () => {
                     <div class="grid grid-cols-3 gap-x-[12px]">
                         <strong class="col-span-3">휴대폰 번호</strong>
                         <div class="select__wrap">
-                            <p class="selected__code"></p>
+                            <p class="selected__code">${phoneCode[0]}</p>
                             <ul class="select__list">${phoneCode
                               .map(
                                 (el) =>
@@ -159,7 +159,7 @@ export const Join = () => {
     let message = {};
     errorMessage !== null && errorMessage.remove();
 
-    const res = fetch(`${url}/accounts/signup/valid/username/`, {
+    const res = fetch(`${url}/accounts/validate-username/`, {
       method: "post",
       headers: {
         "Content-type": "application/json",
@@ -175,7 +175,7 @@ export const Join = () => {
         if (res.ok) {
           message = {
             error: false,
-            text: json.Success,
+            text: json.message,
           };
           userId.classList.contains("error") &&
             userId.classList.remove("error");
@@ -184,7 +184,7 @@ export const Join = () => {
         } else {
           message = {
             error: true,
-            text: json.FAIL_Message,
+            text: json.error,
           };
 
           userId.value = "";
@@ -443,7 +443,6 @@ export const Join = () => {
       data = {
         username: username,
         password: password,
-        password2: password2,
         phone_number: phoneNumber,
         name: name,
       };
@@ -477,7 +476,6 @@ export const Join = () => {
       data = {
         username: username,
         password: password,
-        password2: password2,
         phone_number: phoneNumber,
         name: name,
         company_registration_number: businessNumber,
@@ -487,11 +485,11 @@ export const Join = () => {
 
 
     const res = await fetch(
-      `${url}${/accounts/}/${
-        joinUser === "BUYER" ? "signup/" : "signup_seller/"
-      }`,
+      `${url}/accounts/${
+        joinUser === "BUYER" ? "buyer" : "seller"
+      }/signup/`,
       {
-        method: "post",
+        method: "POST",
         headers: {
           "Content-type": "application/json",
         },
@@ -515,7 +513,7 @@ export const Join = () => {
           .querySelector("#userStoreName")
           .parentNode.insertAdjacentHTML(
             "afterend",
-            ErrorMessage(json.store_name.join(""))
+            ErrorMessage(json?.store_name?.join(""))
           );
         errorMessage = document.querySelector(".error__message");
       }

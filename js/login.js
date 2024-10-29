@@ -95,8 +95,9 @@ export const Login = () => {
       if (res.ok) {
         const json = await res.json();
         const user = {
-          user_type: json.user_type,
-          token: json.token,
+          user_type: json.user.user_type,
+          token: json.access,
+          refresh:json.refresh,
           cart: [],
         };
 

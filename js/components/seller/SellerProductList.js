@@ -1,4 +1,5 @@
 import { url } from "../../main";
+import { checkToken } from "../../utils/token";
 import Loading from "../loading/Loading";
 import Modal from "../modal/Modal";
 
@@ -7,11 +8,14 @@ const fetchData = async (page = "") => {
   try {
     const res = await fetch(`${url}/seller/${page && `?page=${page}`}`, {
       headers: {
-        Authorization: `JWT ${user.token}`,
+        Authorization: `Bearer ${user.token}`,
       },
     });
     if (res.ok) {
       const json = await res.json();
+      if (json.code) {
+        checkToken(json.code);
+      };
       return json;
     }
   } catch (error) {
@@ -34,10 +38,10 @@ const tbodyTemplate = async (page) => {
                 }" class="flex items-center gap-[30px]">
                   <img class="block w-[70px] h-[70px] rounded-full" src="${
                     el.image
-                  }" alt="${el.product_name}" />
+                  }" alt="${el.name}" />
                 <div class="text-left">
                   <h4 class="text-[1.125rem] mb-[10px] leading-[22px]">${
-                    el.product_name
+                    el.name
                   }</h4>
                   <data class="text-[#767676] leading-[20px]" value="${
                     el.stock
@@ -159,7 +163,7 @@ const SellerProductList = async () => {
     const res = fetch(`${url}/products/${deleteId}`, {
       method: "DELETE",
       headers: {
-        Authorization: `JWT ${user.token}`,
+        Authorization: `Bearer ${user.token}`,
       },
     });
 

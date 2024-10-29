@@ -4,16 +4,16 @@ import Home from "./components/Home.js";
 import { Join } from "./join.js";
 import { Login } from "./login.js";
 import Logout from "./logout.js";
+import { updateToken } from "./utils/token.js";
 
 // API URL과 사용자 정보를 export
-export const url = "https://openmarket.weniv.co.kr";
+export const url = import.meta.env.VITE_API_URL;
 export const root = document.getElementById("app");
 export const user = JSON.parse(localStorage.getItem("user"));
 
 // 라우터 함수 정의
 const router = async () => {
   const hash = window.location.hash.slice(1);
-
   root.innerHTML = "";
   if (!hash) {
     await Home();
@@ -47,7 +47,7 @@ const router = async () => {
 
 // 해시체인지 이벤트 핸들러 실행 함수
 const initRouter = () => {
-  router();
+    router();
 
   window.addEventListener("hashchange", router);
 };

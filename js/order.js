@@ -4,12 +4,14 @@ import Modal from "./components/modal/Modal";
 import ErrorMessage from "./components/ErrorMessage";
 import { root, url, user } from "./main";
 import Loading from "./components/loading/Loading";
+import { checkToken, updateToken } from "./utils/token";
 
 /**
  * __이 들어간 클래스는 order.css로 제어
  * form 내부, ul 영역 등은 order.css로 제어
  */
 const template = () => {
+  updateToken();
   // order정보를 가져옴
   const session = sessionStorage.getItem("order");
   const order = JSON.parse(session);
@@ -17,23 +19,23 @@ const template = () => {
   const radioData = [
     {
       text: "신용/체크카드",
-      value: "CARD",
+      value: "card",
     },
     {
       text: "무통장 입금",
-      value: "DEPOSIT",
+      value: "deposit",
     },
     {
       text: "휴대폰 결제",
-      value: "PHONE_PAYMENT",
+      value: "phone",
     },
     {
       text: "네이버페이",
-      value: "NAVERPAY",
+      value: "naverpay",
     },
     {
       text: "카카오페이",
-      value: "KAKAOPAY",
+      value: "kakaopay",
     },
   ];
   // 공통 스타일
@@ -47,7 +49,7 @@ const template = () => {
                       <h3 class="tag__hidden">상품 디테일 정보</h3>
                           <img 
                             src="${el.image}" 
-                            alt="${el.product_name}" 
+                            alt="${el.name}" 
                             class="product__img__${
                               el.cart_item_id
                             } w-full aspect-square max-w-[104px] w-full max-h-[104px] rounded-[5px]" 
@@ -61,7 +63,7 @@ const template = () => {
                         <h4 class="product__name__${
                           el.cart_item_id
                         } text-[1.125rem] leading-[2.25rem]">
-                            ${el.product_name}
+                            ${el.name}
                         </h4>
                         <p class="pb-[16px] text-[0.875rem] leading-[1] text-[#767676]">수량 : ${
                           el.quantity
@@ -591,7 +593,7 @@ const Order = async () => {
     root.appendChild(loading);
     const data = {
       total_price: total,
-      order_kind: orderType,
+      order_type: orderType,
       receiver: reciever,
       receiver_phone_number: recieverPhonNumber,
       address: address,
@@ -599,8 +601,13 @@ const Order = async () => {
       payment_method: selectedPayment,
     };
 
-    if (orderType !== "cart_order") {
-      data.product_id = productId;
+    const session = JSON.parse(sessionStorage.getItem("order"));
+    if (orderType === "cart_order") {
+      const cartItems = [];
+      session.products.forEach((el) => cartItems.push(el.product_id));
+      data.cart_items = cartItems;
+    } else {
+      data.product = session.product_id;
       data.quantity = quantity;
     }
 
@@ -608,7 +615,7 @@ const Order = async () => {
     const res = fetch(`${url}/order/`, {
       method: "post",
       headers: {
-        Authorization: `JWT ${user.token}`,
+        Authorization: `Bearer ${user.token}`,
         "Content-type": "application/json",
       },
       body: JSON.stringify(data),
@@ -617,8 +624,14 @@ const Order = async () => {
     res
       .then(async (res) => {
         if (res.ok) {
+          const json = await res.json();
+          if (json.code) {
+            checkToken(json.code);
+          }
           alert("주문을 완료했습니다.");
           window.location.hash = "";
+
+          updateToken();
         }
       })
       .catch((error) => console.error(error.message))
@@ -650,7 +663,6 @@ const Order = async () => {
       alert("결제수단을 선택해주세요.");
       return;
     }
-
 
     // 주문 제출
     orderSubmitHandler();

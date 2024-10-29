@@ -1,10 +1,15 @@
 import { url } from "./main";
+import { checkToken, updateToken } from "./utils/token";
 
 const fetchData = async (page = "") => {
   try {
+    updateToken();
     const res = await fetch(`${url}/products/${page && `?page=${page}`}`);
     if (res.ok) {
       const json = await res.json();
+      if (json.code) {
+        checkToken(json.code);
+      };
       return json;
     }
   } catch (error) {
@@ -21,18 +26,21 @@ const template = async (page = "") => {
                           (el) => `
                             <li class="">
                               <a href="#details/${
-                                el.product_id
+                                el?.id
                               }" class="grid gap-[10px] product__anchor">
                                   <div class="product__img relative mb-[6px] items-center justify-center h-[0] pb-[100%] overflow-hidden border border-[#c4c4c4] rounded-[10px]">
                                       <img src="${el.image}" alt="${
-                            el.product_name
+                            el?.name
                           }" class="absolute w-full h-full left-[0] top-[0]" />
                                   </div>
                                   <p class="text-[#767676] leading-[1]">
-                                    ${el.store_name.replace(/\x08/g, "")}
+                                    ${el?.seller?.store_name?.replace(
+                                      /\x08/g,
+                                      ""
+                                    )}
                                   </p>
                                   <h3 class="text-[1.125rem] leading-[1.375rem]">
-                                      ${el.product_name.replace(/\x08/g, "")}
+                                      ${el?.name?.replace(/\x08/g, "")}
                                   </h3>
                                   <strong class="text-[1.5rem] leading-[1]">${el.price.toLocaleString()}<span class="ml-[2px] font-normal text-[1rem]">원</span></strong>
                                 </a>

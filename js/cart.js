@@ -2,6 +2,7 @@ import { root, url } from "./main";
 import "../css/cart.css";
 import Modal from "./components/modal/Modal";
 import Loading from "./components/loading/Loading";
+import { checkToken, updateToken } from "./utils/token";
 
 const detailFetchData = async (id = "") => {
   try {
@@ -16,19 +17,27 @@ const detailFetchData = async (id = "") => {
 };
 
 const fetchData = async (page = "") => {
+  updateToken();
   const user = JSON.parse(localStorage.getItem("user"));
+  if (user === null) {
+    alert("로그인해 주세요.");
+    window.location.hash = "#login";
+  }
   try {
     const res = await fetch(
       `${url}/cart/${page !== "" ? `?page=${page}` : ""}`,
       {
         method: "get",
         headers: {
-          Authorization: `JWT ${user.token}`,
+          Authorization: `Bearer ${user.token}`,
         },
       }
     );
     if (res.ok) {
       const json = await res.json();
+      if (json.code) {
+        checkToken(json.code);
+      }
       return json;
     }
   } catch (error) {
@@ -42,8 +51,8 @@ const template = async (page = "") => {
   const tdStyle = `px-[10px] py-[20px]`;
   const btnStyle = `w-[48px] h-[48px] indent-[-9999px] border border-[#c4c4c4] bg-no-repeat bg-center`;
   const emptyMessage = `
-                        <tr class="block">
-                            <td colspan-"4" class="py-[175px] text-center">
+                        <tr class="flex items-center justify-center">
+                            <td class="py-[175px] text-center">
                                 <div>
                                     <p class="text-[1.125rem] leading-[20px] mb-[20px]">장바구니에 담긴 상품이 없습니다.</p>
                                     <p class="text-[0.875rem] text-[#767676]">원하는 상품을 장바구니에 담아보세요!</p>
@@ -78,12 +87,12 @@ const template = async (page = "") => {
     const cartData = [];
 
     for (const el of data.results) {
-      const detail = await detailFetchData(el.product_id);
+      const detail = await detailFetchData(el.product.id);
       const item = {
         ...el,
         image: detail.image,
-        product_name: detail.product_name,
-        store_name: detail.store_name,
+        name: detail.name,
+        store_name: detail.seller.store_name,
         price: detail.price,
         shipping_fee: detail.shipping_fee,
         shipping_method: detail.shipping_method,
@@ -105,10 +114,10 @@ const template = async (page = "") => {
         : `${(el.price * el.quantity + el.shipping_fee).toLocaleString()}`;
     return `<tr class="relative flex items-center rounded-[10px] border border-[#e0e0e0]">
         <td class="px-[30px]">
-            <label class="cart__item__label" for="checkbox__${el.cart_item_id}">
+            <label class="cart__item__label" for="checkbox__${el.id}">
                 <input type="checkbox" class="item__checkbox" value="${
-                  el.cart_item_id
-                }" id="checkbox__${el.cart_item_id}" />
+                  el.id
+                }" id="checkbox__${el.id}" />
             </label>
         </td>
         <td class="${tdStyle} flex-[2_4_0%]">
@@ -117,31 +126,31 @@ const template = async (page = "") => {
                     <h3 class="tag__hidden">상품 디테일 정보</h3>
                         <img 
                           src="${el.image}" 
-                          alt="${el.product_name}" 
+                          alt="${el.name}" 
                           class="product__img__${
-                            el.cart_item_id
+                            el.id
                           } w-full aspect-square max-w-[160px] w-full max-h-[160px] rounded-[5px]" 
                         />
                     <div class="flex grow flex-col justify-between">
                         <div class="grid gap-[10px]">
                             <p class="store__name__${
-                              el.cart_item_id
+                              el.id
                             } text-[#767676] leading-[1] text-[0.875rem]">
                             ${el.store_name}
                             </p>
                             <h4 class="product__name__${
-                              el.cart_item_id
+                              el.id
                             } text-[1.125rem] leading-[2.25rem]" data-productId="${
-      el.product_id
+      el.product.id
     }" data-active="${el.is_active}">
-                                ${el.product_name}
+                                ${el.name}
                             </h4>
                             <strong class="product__price__${
-                              el.cart_item_id
+                              el.id
                             } text-[1rem] leading-[1]">${el.price.toLocaleString()}원</strong>
                         </div>
                         <p class="shipping__${
-                          el.cart_item_id
+                          el.id
                         } pb-[16px] text-[0.875rem] leading-[1] text-[#767676]">${
       el.shipping_method === "PARCEL" ? "택배배송" : "배달"
     } / ${
@@ -154,12 +163,12 @@ const template = async (page = "") => {
             </a>
         </td>
         <td class="${tdStyle} flex-[1_4_0%]">
-            <div data-cartId="${el.cart_item_id}" data-productId="${
-      el.product_id
+            <div data-cartId="${el.id}" data-productId="${
+      el.product.id
     }" class="quantity__wrap cursor-pointer flex justify-center">
                 <button type="button" class="quantity__minus__btn rounded-[5px_0_0_5px] ${btnStyle} bg-[url('/openMarket/images/icon-minus-line.svg')]">빼기</button>
                 <p class="product__quantity__${
-                  el.cart_item_id
+                  el.id
                 } w-[50px] text-center leading-[20px] py-[12px] border-t border-t-[#c4c4c4] border-b border-b-[#c4c4c4]" data-stock="${
       el.stock
     }">${el.quantity}</p>
@@ -168,15 +177,13 @@ const template = async (page = "") => {
         </td>
         <td class="${tdStyle} flex-[1_4_0%] text-center">
             <strong class="block leading-[20px] mb-[28px] text-[1.125rem] text-[#EB5757]"><span class="totalPrice__${
-              el.cart_item_id
+              el.id
             }">${totalPrice}</span>원</strong>
-            <button type="button" data-cartId="${
-              el.cart_item_id
-            }" data-productId="${
-      el.product_id
+            <button type="button" data-cartId="${el.id}" data-productId="${
+      el.product.id
     }" class="item__order__btn leading-[20px] mx-auto px-[35px] py-[10px] bg-[#21BF48] text-white rounded-[5px]">주문하기</button>
              <button type="button" data-cartId="${
-               el.cart_item_id
+               el.id
              }" class="delete__btn absolute right-[18px] top-[18px] rotate-45 w-[22px] h-[22px] indent-[-9999px] bg-[url('/openMarket/images/icon-plus-line.svg')] bg-no-repeat bg-center">삭제</button>
         </td>
     </tr>`;
@@ -379,7 +386,7 @@ const Cart = async () => {
     let orderType = "";
     if (cartId) {
       orderData.add(cartId);
-      orderType = "cart_one_order";
+      orderType = "cart_order";
     } else {
       setAmount.forEach((el) => orderData.add(el));
       orderType = "cart_order";
@@ -399,7 +406,7 @@ const Cart = async () => {
         `.product__quantity__${itemId}`
       );
       const productQuantity = productQuantityData.textContent.trim();
-      const stock = productQuantity.getAttribute("data-stock");
+      const stock = productQuantityData.getAttribute("data-stock");
 
       const storeName = inner
         .querySelector(`.store__name__${itemId}`)
@@ -418,13 +425,32 @@ const Cart = async () => {
         alert(
           `${productName} 상품의 수량이 재고 보다 많습니다.\n수정 후 다시 주문해주세요.`
         );
-        productQuantityData.textContent = stock;
+        console.log(itemId);
+        try {
+          const res = fetch(`${url}/cart/${itemId}/`, {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({ quantity: stock }),
+          });
+
+          if (res.ok) {
+            const json = await res.join();
+            productQuantityData.textContent = json.quantity;
+            window.location.reload();
+          }
+        } catch (error) {
+          console.error(error);
+          alert("수량을 수정하는 데에 실패했습니다.");
+        }
         return;
       }
-
+      console.log("productId", productId);
       const data = {
         product_id: productId,
-        product_name: productName,
+        name: productName,
         image: productImage,
         quantity: productQuantity,
         store_name: storeName,
@@ -438,7 +464,7 @@ const Cart = async () => {
         await fetch(`${url}/cart/${itemId}/`, {
           method: "PUT",
           headers: {
-            Authorization: `JWT ${user.token}`,
+            Authorization: `Bearer ${user.token}`,
             "Content-type": "application/json",
           },
           body: JSON.stringify({
@@ -503,7 +529,7 @@ const Cart = async () => {
     const res = fetch(`${url}/cart/${cartId}/`, {
       method: "PUT",
       headers: {
-        Authorization: `JWT ${user.token}`,
+        Authorization: `Bearer ${user.token}`,
         "Content-type": "application/json",
       },
       body: JSON.stringify(data),
@@ -520,7 +546,9 @@ const Cart = async () => {
           const newData = await template();
           inner.innerHTML = "";
           inner.insertAdjacentHTML("beforeend", newData.template);
+          updateToken();
         }
+
       })
       .catch((error) => console.error(error))
       .finally(() => {
@@ -536,7 +564,7 @@ const Cart = async () => {
     const res = fetch(`${url}/cart/${deleteId}`, {
       method: "DELETE",
       headers: {
-        Authorization: `JWT ${user.token}`,
+        Authorization: `Bearer ${user.token}`,
       },
     });
 

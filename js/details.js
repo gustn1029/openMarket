@@ -1,6 +1,7 @@
 import { root, url } from "./main";
 import "../css/details.css";
 import Modal from "./components/modal/Modal";
+import { checkToken, updateToken } from "./utils/token";
 
 // 부가 정보 탭에서 사용하는 배열
 const tabArr = [
@@ -27,10 +28,14 @@ const tabArr = [
 ];
 
 const fetchData = async (id = "") => {
+  updateToken();
   try {
     const res = await fetch(`${url}/products/${parseInt(id)}/`);
     if (res.ok) {
       const json = await res.json();
+      if (json.code) {
+        checkToken(json.code);
+      };
       return json;
     }
   } catch (error) {
@@ -50,16 +55,16 @@ const template = async (id) => {
                 <h3 class="tag__hidden">상품 디테일 정보</h3>
                 <div class="max-w-[600px] max-h-[600px] grow">
                 <img src="${data.image}" alt="${
-    data.product_name
+    data.name
   }" class="w-full aspect-square" />
             </div>
             <div class="flex grow flex-col justify-between">
                 <div>
                     <p class="mb-[16px] text-[#767676] leading-[1] text-[1.125rem]">
-                    ${data.store_name}
+                    ${data?.seller.store_name}
                     </p>
                     <h4 class="mb-[20px] text-[1.125rem] leading-[2.25rem]">
-                        ${data.product_name}
+                        ${data.name}
                     </h4>
                     <strong class="text-[2.25rem] leading-[1]">${data.price.toLocaleString()}<span class="ml-[2px] font-normal text-[1.125rem]">원</span></strong>
                 </div>
@@ -203,10 +208,10 @@ const Details = async (id) => {
 
     const data = {
       product_id: temp.data.product_id,
-      product_name: temp.data.product_name,
+      name: temp.data.name,
       image: temp.data.image,
       quantity: quantity.textContent,
-      store_name: temp.data.store_name,
+      store_name: temp.data.seller.store_name,
       shipping_method: shippingMethod,
       shipping_fee:
         shippingFee === 0 ? "무료배송" : `${shippingFee.toLocaleString()}원`,
@@ -219,6 +224,7 @@ const Details = async (id) => {
       parcel: shippingFee,
       discount: discount,
       products: [data],
+      product_id: temp.data.id
     };
 
     sessionStorage.setItem("order", JSON.stringify(order));
@@ -259,16 +265,16 @@ const Details = async (id) => {
     if(user.user_type === "SELLER") {
       return;
     }
-
+    updateToken();
     const data = {
-      product_id: temp.data.product_id,
+      product_id: temp.data.id,
       quantity: parseInt(quantity.textContent),
     };
 
     const res = fetch(`${url}/cart/`, {
       method: "POST",
       headers: {
-        Authorization: `JWT ${user.token}`,
+        Authorization: `Bearer ${user.token}`,
         "Content-type": "application/json",
       },
       body: JSON.stringify(data),
