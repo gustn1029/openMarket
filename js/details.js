@@ -194,6 +194,19 @@ const Details = async (id) => {
 
   // 구매 버튼 클릭 핸들러
   const buyBtnClickHandler = () => {
+    if (!user) {
+      if (!isModal) {
+        modal = Modal(
+          `로그인이 필요한 서비스입니다.<br>로그인 하시겠습니까?`,
+          ModalEventHandler,
+          ModalCloseHandler
+        );
+        root.appendChild(modal);
+        isModal = true;
+      }
+      return;
+    }
+    
     if(user.user_type === "SELLER") {
       return;
     }
